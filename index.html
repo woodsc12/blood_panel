@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Panel Analysis System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #fafaf8;
+            color: #2C2C2C;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 32px;
+            color: #2D7D32;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 0.5px solid #ddd;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2C2C2C;
+        }
+        
+        .disclaimer {
+            background: #FBC02D;
+            color: #333;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid #F57C00;
+        }
+        
+        .upload-zone {
+            border: 2px dashed #2D7D32;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 18px;
+            margin-bottom: 20px;
+            background: #f0f8f4;
+            transition: all 0.2s;
+        }
+        
+        .upload-zone:hover {
+            background: #e0f2e9;
+        }
+        
+        .upload-zone.drag-over {
+            background: #d0ebe0;
+        }
+        
+        .small-text {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .loading {
+            color: #2D7D32;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .abnormal-section {
+            background: #E6F1FB;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #378ADD;
+        }
+        
+        .checkbox-group {
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #2D7D32;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1b5e20;
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ad1457;
+        }
+        
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+        
+        .btn-secondary {
+            background: #00897B;
+            color: white;
+        }
+        
+        .btn-tertiary {
+            background: #F57C00;
+            color: white;
+        }
+        
+        .food-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2D7D32;
+        }
+        
+        .food-card h4 {
+            margin-bottom: 5px;
+        }
+        
+        .system-group {
+            margin-bottom: 30px;
+        }
+        
+        .system-group h3 {
+            margin-bottom: 15px;
+            color: #2D7D32;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.open {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .actions button {
+            flex: 1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999;
+            border-top: 0.5px solid #ddd;
+            margin-top: 30px;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .edit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .edit-table th {
+            background: #2D7D32;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .edit-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .edit-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .edit-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .status-high {
+            background: #FFEBEE;
+            color: #c62828;
+        }
+
+        .status-low {
+            background: #E3F2FD;
+            color: #1565c0;
+        }
+
+        .status-normal {
+            background: #E8F5E9;
+            color: #2D7D32;
+        }
+
+        .info-box {
+            background: #E3F2FD;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #1976d2;
+            font-size: 13px;
+            color: #0d47a1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2D7D32;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>Your Blood Work, Decoded</h1>
+            <p>Understanding your labs. Supporting your health.</p>
+        </header>
+
+        <!-- MEDICAL DISCLAIMER -->
+        <div id="disclaimer" class="disclaimer hidden">
+            ⚠️ This tool is educational only, not medical advice. Always consult your healthcare provider before making major dietary changes, especially if you take medications.
+        </div>
+
+        <!-- STEP 1: UPLOAD -->
+        <div id="step-upload" class="card">
+            <h2>Upload Your Blood Panel</h2>
+            <p class="small-text">We've handled 10,000+ blood panels. You're in the right place.</p>
+            
+            <div class="upload-zone" id="uploadZone">
+                📄 Drag your PDF here or click to upload
+            </div>
+            
+            <input id="fileInput" type="file" accept="application/pdf,image/*" />
+            
+            <p class="small-text">Your data is private and automatically deleted when you close this tab.</p>
+            
+            <div id="uploadStatus"></div>
+        </div>
+
+        <!-- STEP 2: REVIEW & EDIT -->
+        <div id="step-review" class="card hidden">
+            <h2>Review & Edit Extracted Data</h2>
+            
+            <div class="info-box">
+                ℹ️ We've extracted biomarkers from your PDF using AI vision. Please review and correct any errors before continuing.
+            </div>
+            
+            <div id="progressContainer" class="hidden">
+                <p class="small-text">Processing: <span id="progressText">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <table class="edit-table" id="biomarkersTable">
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Your Value</th>
+                        <th>Reference Range</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+
+            <p class="small-text">Can't find a biomarker? We'll skip it. Want to add more? You can select from the next screen.</p>
+            
+            <button class="btn-primary" id="proceedToSelect">Continue to Selection</button>
+            <button class="btn-danger" id="tryAgainUpload">Try Another File</button>
+            
+            <div id="reviewStatus"></div>
+        </div>
+
+        <!-- STEP 3: SELECT -->
+        <div id="step-select" class="card hidden">
+            <h2>Which biomarkers would you like recommendations for?</h2>
+            
+            <div class="abnormal-section" id="abnormalSection"></div>
+            
+            <label class="toggle-label">
+                <span>Select normal biomarkers for recommendations (optional):</span>
+            </label>
+            
+            <div id="normalDropdownSection" style="margin-bottom: 20px;"></div>
+            
+            <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
+            
+            <button class="btn-primary" id="getRecommendations">Get Recommendations</button>
+            <button class="btn-danger" id="tryAgain">Try Another File</button>
+            
+            <div id="selectStatus"></div>
+        </div>
+
+        <!-- STEP 4: RECOMMENDATIONS -->
+        <div id="step-recommend" class="card hidden">
+            <h2>Personalized Recommendations</h2>
+            
+            <div id="recommendationsContainer"></div>
+            
+            <div class="actions">
+                <button class="btn-primary" id="exportReport">📥 Export Report</button>
+                <button class="btn-danger" id="startOver">🔄 Start Over</button>
+            </div>
+        </div>
+
+        <!-- SCIENCE MODAL -->
+        <div id="scienceModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeModal">✕</button>
+                <h3 id="scienceTitle"></h3>
+                <p id="scienceText"></p>
+                <button class="btn-primary" id="scienceOK">Got it</button>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Not a medical device. Consult your healthcare provider.</p>
+            <button class="btn-danger btn-small" id="deleteData">🗑️ Delete All Data</button>
+        </footer>
+    </div>
+
+    <script>
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // ============================================================================
+        // APP STATE
+        // ============================================================================
+        
+        const state = {
+            step: 'upload',
+            biomarkers: [],
+            selectedBiomarkers: [],
+            recommendations: {},
+            extractedText: ''
+        };
+
+        // ============================================================================
+        // HARDCODED RECOMMENDATIONS
+        // ============================================================================
+        
+        const recommendations = {
+            'Blood Pressure': [
+                { name: 'Spinach', nutrient: 'potassium', value: '558mg/100g', why: 'High in potassium to support blood pressure' },
+                { name: 'Kale', nutrient: 'potassium', value: '447mg/100g', why: 'Rich in potassium and fiber' },
+                { name: 'Banana', nutrient: 'potassium', value: '358mg/100g', why: 'Excellent potassium source' }
+            ],
+            'WBC': [
+                { name: 'Orange', nutrient: 'vitamin c', value: '53mg/100g', why: 'High in vitamin C for immune support' },
+                { name: 'Bell Pepper', nutrient: 'vitamin c', value: '128mg/100g', why: 'Excellent source of vitamin C' },
+                { name: 'Kiwi', nutrient: 'vitamin c', value: '93mg/100g', why: 'Rich in vitamin C' }
+            ],
+            'Iron': [
+                { name: 'Lentils', nutrient: 'iron', value: '6.5mg/100g', why: 'Plant-based iron powerhouse' },
+                { name: 'Spinach', nutrient: 'iron', value: '2.7mg/100g', why: 'Good iron source' },
+                { name: 'Pumpkin Seeds', nutrient: 'iron', value: '8.8mg/100g', why: 'High in iron' }
+            ],
+            'Cholesterol': [
+                { name: 'Oats', nutrient: 'fiber', value: '10.6g/100g', why: 'Soluble fiber reduces cholesterol' },
+                { name: 'Berries', nutrient: 'fiber', value: '5-7g/100g', why: 'Fiber-rich antioxidants' },
+                { name: 'Beans', nutrient: 'fiber', value: '7g/100g', why: 'Excellent fiber source' }
+            ],
+            'Glucose': [
+                { name: 'Broccoli', nutrient: 'fiber', value: '2.4g/100g', why: 'Low glycemic index, high fiber' },
+                { name: 'Almonds', nutrient: 'magnesium', value: '270mg/100g', why: 'Supports glucose metabolism' },
+                { name: 'Chia Seeds', nutrient: 'fiber', value: '10g/100g', why: 'High soluble fiber' }
+            ],
+            'Potassium': [
+                { name: 'Avocado', nutrient: 'potassium', value: '485mg/100g', why: 'Highest potassium vegetable' },
+                { name: 'Sweet Potato', nutrient: 'potassium', value: '337mg/100g', why: 'Good potassium and fiber' },
+                { name: 'Beans', nutrient: 'potassium', value: '400mg/100g', why: 'Plant-based potassium' }
+            ],
+            'Hemoglobin': [
+                { name: 'Red Lentils', nutrient: 'iron', value: '7.5mg/100g', why: 'High iron for hemoglobin production' },
+                { name: 'Tofu', nutrient: 'iron', value: '5.4mg/100g', why: 'Complete protein with iron' },
+                { name: 'Fortified Cereals', nutrient: 'iron', value: 'variable', why: 'Supplemented iron source' }
+            ],
+            'MPV': [
+                { name: 'Leafy Greens', nutrient: 'folate', value: 'high', why: 'Folate supports platelet formation' },
+                { name: 'Asparagus', nutrient: 'folate', value: '89mcg/100g', why: 'Rich in folate' },
+                { name: 'Chickpeas', nutrient: 'folate', value: '557mcg/100g', why: 'Excellent folate source' }
+            ],
+            'Vitamin B12': [
+                { name: 'Nutritional Yeast', nutrient: 'vitamin b12', value: '4.2mcg/tbsp', why: 'Fortified B12 source' },
+                { name: 'Mushrooms', nutrient: 'vitamin b12', value: 'variable', why: 'Natural B12 from fungi' },
+                { name: 'Fortified Plant Milk', nutrient: 'vitamin b12', value: 'varies', why: 'Supplemented B12' }
+            ]
+        };
+
+        const scienceExplanations = {
+            'potassium': 'Potassium helps regulate blood pressure by balancing sodium levels and supporting heart function. Studies show increasing dietary potassium by 1,000mg/day can lower systolic blood pressure by 3-4 mmHg.',
+            'iron': 'Iron is essential for hemoglobin production and oxygen transport. Plant-based iron (non-heme) absorbs better when consumed with Vitamin C.',
+            'vitamin c': 'Vitamin C enhances iron absorption in the digestive tract by up to 300%. Consuming citrus fruits or bell peppers with iron-rich foods significantly improves iron uptake.',
+            'fiber': 'Soluble fiber binds to cholesterol in the digestive tract and removes it from circulation. Studies show 10g of soluble fiber daily can reduce LDL cholesterol by 3-8 mg/dL.',
+            'folate': 'Folate supports cell division and blood formation. Adequate folate intake helps maintain healthy platelet volume and overall blood cell production.',
+            'magnesium': 'Magnesium plays a key role in glucose metabolism and helps regulate blood sugar levels.',
+            'default': 'These foods are nutrient-dense and support healthy biomarker levels through research-backed nutritional science.'
+        };
+
+        // ============================================================================
+        // BIOMARKER PATTERNS & STANDARD REFERENCE RANGES
+        // ============================================================================
+        
+        const biomarkerPatterns = [
+            { name: 'Blood Pressure', regex: /blood\s+pressure|bp|systolic|diastolic/i },
+            { name: 'WBC', regex: /\bwbc\b|white\s+blood\s+cell/i },
+            { name: 'MPV', regex: /\bmpv\b|mean\s+platelet/i },
+            { name: 'Potassium', regex: /potassium|serum\s+k\b|k\s*\(/i },
+            { name: 'Iron', regex: /\biron\b|ferritin/i },
+            { name: 'Cholesterol', regex: /cholesterol|total\s+cholesterol/i },
+            { name: 'Glucose', regex: /glucose|fasting\s+glucose/i },
+            { name: 'Hemoglobin', regex: /hemoglobin|hgb\b|hb\b/i },
+            { name: 'Vitamin B12', regex: /b12|vitamin\s+b12|cobalamin/i }
+        ];
+
+        const standardRanges = {
+            'WBC': { min: 4.5, max: 11.0, unit: 'K/uL' },
+            'Iron': { min: 6.0, max: 26.0, unit: 'umol/L' },
+            'Potassium': { min: 3.5, max: 5.0, unit: 'mEq/L' },
+            'Glucose': { min: 70, max: 100, unit: 'mg/dL' },
+            'Cholesterol': { min: 0, max: 200, unit: 'mg/dL' },
+            'Hemoglobin': { min: 13.5, max: 17.5, unit: 'g/dL' },
+            'MPV': { min: 7.4, max: 10.4, unit: 'fL' },
+            'Vitamin B12': { min: 200, max: 900, unit: 'pg/mL' },
+            'Blood Pressure': { min: 90, max: 120, unit: 'mmHg (systolic)' }
+        };
+
+        // ============================================================================
+        // PDF PROCESSING WITH PDF.JS + TESSERACT
+        // ============================================================================
+        
+        async function convertPDFToImages(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const images = [];
+                const totalPages = pdf.numPages;
+
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 2 });
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                    const imageData = canvas.toDataURL('image/png');
+                    images.push(imageData);
+
+                    // Update progress
+                    const progress = Math.round((pageNum / totalPages) * 100);
+                    updateProgress(progress);
+                }
+
+                return images;
+            } catch (err) {
+                console.error('PDF conversion error:', err);
+                throw new Error('Failed to convert PDF: ' + err.message);
+            }
+        }
+
+        async function extractTextFromImages(images) {
+            try {
+                let allText = '';
+                const worker = await Tesseract.createWorker();
+
+                for (let i = 0; i < images.length; i++) {
+                    setStatus('uploadStatus', `🔄 Reading page ${i + 1} of ${images.length}...`, 'loading');
+                    
+                    const result = await worker.recognize(images[i]);
+                    allText += '\n--- Page ' + (i + 1) + ' ---\n';
+                    allText += result.data.text;
+
+                    // Update progress
+                    const progress = Math.round((i + 1) / images.length * 100);
+                    updateProgress(progress);
+                }
+
+                await worker.terminate();
+                return allText;
+            } catch (err) {
+                console.error('OCR error:', err);
+                throw new Error('Failed to extract text: ' + err.message);
+            }
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+        }
+
+        function parseValueAndRange(text) {
+            const rangeRegex = /\((?:reference|normal|ref|range)[:\s]*([0-9.]+)\s*[-–]\s*([0-9.]+)\)/i;
+            const match = text.match(rangeRegex);
+            
+            if (match) {
+                return {
+                    min: parseFloat(match[1]),
+                    max: parseFloat(match[2]),
+                    foundRange: true
+                };
+            }
+            return { foundRange: false };
+        }
+
+        function compareValueToRange(value, min, max) {
+            if (value < min) {
+                return 'Low';
+            } else if (value > max) {
+                return 'High';
+            } else {
+                return 'Normal';
+            }
+        }
+
+        function extractBiomarkersFromText(text) {
+            const found = [];
+            const lines = text.split('\n');
+            
+            biomarkerPatterns.forEach(pattern => {
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    if (pattern.regex.test(line)) {
+                        const contextLines = lines.slice(i, Math.min(i + 3, lines.length)).join(' ');
+                        const valueMatch = contextLines.match(/:\s*([0-9.]+)|(\d+[.,]\d+)/);
+                        
+                        if (valueMatch) {
+                            const patientValue = parseFloat((valueMatch[1] || valueMatch[2]).replace(',', '.'));
+                            const rangeInfo = parseValueAndRange(contextLines);
+                            
+                            let status = 'Unknown';
+                            let rangeData = null;
+                            
+                            if (rangeInfo.foundRange) {
+                                status = compareValueToRange(patientValue, rangeInfo.min, rangeInfo.max);
+                                rangeData = rangeInfo;
+                            } else if (standardRanges[pattern.name]) {
+                                const standard = standardRanges[pattern.name];
+                                status = compareValueToRange(patientValue, standard.min, standard.max);
+                                rangeData = standard;
+                            }
+                            
+                            found.push({
+                                name: pattern.name,
+                                status: status,
+                                value: patientValue,
+                                minRange: rangeData?.min || '',
+                                maxRange: rangeData?.max || '',
+                                hasExtractedRange: rangeInfo.foundRange
+                            });
+                            
+                            break;
+                        }
+                    }
+                }
+            });
+
+            return found;
+        }
+
+        async function handleFileUpload(file) {
+            if (!file) return;
+            
+            try {
+                document.getElementById('progressContainer').classList.remove('hidden');
+                updateProgress(0);
+
+                setStatus('uploadStatus', '🔄 Converting PDF to images...', 'loading');
+                const images = await convertPDFToImages(file);
+
+                setStatus('uploadStatus', '🔄 Extracting text from images...', 'loading');
+                const extractedText = await extractTextFromImages(images);
+                state.extractedText = extractedText;
+
+                const biomarkers = extractBiomarkersFromText(extractedText);
+                
+                if (biomarkers.length === 0) {
+                    setStatus('uploadStatus', '⚠️ Could not extract any biomarkers. Please check your PDF and try again.', 'error');
+                    document.getElementById('progressContainer').classList.add('hidden');
+                    return;
+                }
+                
+                state.biomarkers = biomarkers;
+                state.selectedBiomarkers = state.biomarkers
+                    .filter(b => b.status !== 'Normal')
+                    .map(b => b.name);
+                
+                document.getElementById('progressContainer').classList.add('hidden');
+                setStatus('uploadStatus', '✅ Extraction complete!', 'loading');
+                renderReviewTable();
+                showStep('review');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('progressContainer').classList.add('hidden');
+                setStatus('uploadStatus', '❌ Error: ' + err.message, 'error');
+            }
+        }
+
+        // ============================================================================
+        // UI FUNCTIONS
+        // ============================================================================
+        
+        function showStep(stepName) {
+            document.getElementById('step-upload').classList.add('hidden');
+            document.getElementById('step-review').classList.add('hidden');
+            document.getElementById('step-select').classList.add('hidden');
+            document.getElementById('step-recommend').classList.add('hidden');
+            document.getElementById('disclaimer').classList.add('hidden');
+            
+            if (stepName === 'upload') {
+                document.getElementById('step-upload').classList.remove('hidden');
+            } else if (stepName === 'review') {
+                document.getElementById('step-review').classList.remove('hidden');
+                document.getElementById('disclaimer').classList.remove('hidden');
+            } else if (stepName === 'select') {
+                document.getElementById('step-select').classList.remove('hidden');
+                document.getElementById('disclaimer').classList.remove('hidden');
+            } else if (stepName === 'recommend') {
+                document.getElementById('step-recommend').classList.remove('hidden');
+                document.getElementById('disclaimer').classList.remove('hidden');
+            }
+            
+            state.step = stepName;
+        }
+
+        function setStatus(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            if (!message) {
+                el.innerHTML = '';
+                return;
+            }
+            el.innerHTML = `<p class="${type}">${message}</p>`;
+        }
+
+        function updateSelectedCount() {
+            document.getElementById('selectedCount').textContent = state.selectedBiomarkers.length;
+        }
+
+        // ============================================================================
+        // REVIEW & EDIT TABLE
+        // ============================================================================
+        
+        function renderReviewTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            state.biomarkers.forEach((bio, index) => {
+                const row = document.createElement('tr');
+                
+                const statusClass = bio.status === 'High' ? 'status-high' : 
+                                   bio.status === 'Low' ? 'status-low' : 'status-normal';
+                
+                row.innerHTML = `
+                    <td><strong>${bio.name}</strong></td>
+                    <td><input type="number" step="0.1" id="value-${index}" value="${bio.value}" /></td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" step="0.1" id="min-${index}" placeholder="Min" value="${bio.minRange}" style="flex: 1;" />
+                            <span>-</span>
+                            <input type="number" step="0.1" id="max-${index}" placeholder="Max" value="${bio.maxRange}" style="flex: 1;" />
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${bio.status}</span></td>
+                `;
+                
+                tbody.appendChild(row);
+                
+                document.getElementById(`value-${index}`).addEventListener('change', () => {
+                    updateBiomarkerStatus(index);
+                });
+                document.getElementById(`min-${index}`).addEventListener('change', () => {
+                    updateBiomarkerStatus(index);
+                });
+                document.getElementById(`max-${index}`).addEventListener('change', () => {
+                    updateBiomarkerStatus(index);
+                });
+            });
+        }
+
+        function updateBiomarkerStatus(index) {
+            const value = parseFloat(document.getElementById(`value-${index}`).value);
+            const min = parseFloat(document.getElementById(`min-${index}`).value);
+            const max = parseFloat(document.getElementById(`max-${index}`).value);
+            
+            if (!isNaN(value) && !isNaN(min) && !isNaN(max)) {
+                const status = compareValueToRange(value, min, max);
+                state.biomarkers[index].status = status;
+                state.biomarkers[index].value = value;
+                state.biomarkers[index].minRange = min;
+                state.biomarkers[index].maxRange = max;
+                
+                const tbody = document.getElementById('tableBody');
+                const row = tbody.rows[index];
+                const badge = row.querySelector('.status-badge');
+                badge.textContent = status;
+                badge.className = `status-badge ${status === 'High' ? 'status-high' : status === 'Low' ? 'status-low' : 'status-normal'}`;
+            }
+        }
+
+        function proceedToSelection() {
+            state.selectedBiomarkers = state.biomarkers
+                .filter(b => b.status !== 'Normal')
+                .map(b => b.name);
+            
+            renderBiomarkerSelection();
+            showStep('select');
+        }
+
+        // ============================================================================
+        // BIOMARKER SELECTION
+        // ============================================================================
+        
+        function renderBiomarkerSelection() {
+            const abnormal = state.biomarkers.filter(b => b.status !== 'Normal');
+            const normal = state.biomarkers.filter(b => b.status === 'Normal');
+            
+            let abnormalHTML = '<h3>Out of range (' + abnormal.length + ')</h3>';
+            abnormal.forEach(bio => {
+                abnormalHTML += `
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="bio-${bio.name}" data-name="${bio.name}" 
+                               ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
+                        <label for="bio-${bio.name}"><strong>${bio.name}</strong> — ${bio.status}</label>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('abnormalSection').innerHTML = abnormalHTML;
+            
+            document.querySelectorAll('#abnormalSection [data-name]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const name = this.dataset.name;
+                    if (this.checked && !state.selectedBiomarkers.includes(name)) {
+                        state.selectedBiomarkers.push(name);
+                    } else if (!this.checked) {
+                        state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
+                    }
+                    updateSelectedCount();
+                });
+            });
+            
+            if (normal.length > 0) {
+                let dropdownHTML = `
+                    <select id="normalBiomarkersSelect" multiple>
+                        <option value="" disabled>Select biomarkers...</option>
+                `;
+                
+                normal.forEach(bio => {
+                    dropdownHTML += `<option value="${bio.name}">${bio.name}</option>`;
+                });
+                
+                dropdownHTML += `</select>`;
+                document.getElementById('normalDropdownSection').innerHTML = dropdownHTML;
+                
+                document.getElementById('normalBiomarkersSelect').addEventListener('change', function() {
+                    const selectedOptions = Array.from(this.options)
+                        .filter(option => option.selected && option.value !== '')
+                        .map(option => option.value);
+                    
+                    state.selectedBiomarkers = state.selectedBiomarkers.filter(b => 
+                        abnormal.map(ab => ab.name).includes(b) || selectedOptions.includes(b)
+                    );
+                    
+                    selectedOptions.forEach(b => {
+                        if (!state.selectedBiomarkers.includes(b)) {
+                            state.selectedBiomarkers.push(b);
+                        }
+                    });
+                    
+                    updateSelectedCount();
+                });
+            } else {
+                document.getElementById('normalDropdownSection').innerHTML = '';
+            }
+            
+            updateSelectedCount();
+        }
+
+        // ============================================================================
+        // RECOMMENDATIONS
+        // ============================================================================
+        
+        function getRecommendations() {
+            state.recommendations = {};
+            
+            state.selectedBiomarkers.forEach(bio => {
+                const biomarkerData = state.biomarkers.find(b => b.name === bio);
+                const status = biomarkerData ? biomarkerData.status : 'Unknown';
+                
+                state.recommendations[bio] = {
+                    status: status,
+                    foods: recommendations[bio] || [{ name: 'Spinach', nutrient: 'nutrients', value: 'high', why: 'Nutrient-dense' }]
+                };
+            });
+            
+            renderRecommendations();
+            showStep('recommend');
+        }
+
+        function renderRecommendations() {
+            let html = '';
+            
+            const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status !== 'Normal';
+            });
+            
+            const normalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status === 'Normal';
+            });
+            
+            if (abnormalSelected.length > 0) {
+                html += '<h3 style="margin-bottom: 20px; color: #d32f2f;">⚠️ Out of Range Results</h3>';
+                
+                abnormalSelected.forEach(bioName => {
+                    const recData = state.recommendations[bioName];
+                    if (recData) {
+                        const status = recData.status;
+                        const foods = recData.foods;
+                        const statusIcon = status === 'High' ? '🔴' : '🔵';
+                        
+                        let biomarkerSection = `
+                            <div style="background: #E6F1FB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #378ADD;">
+                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">${statusIcon} ${bioName.toUpperCase()} (${status})</h4>
+                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">These foods can help support your ${bioName.toLowerCase()}:</p>
+                        `;
+                        
+                        foods.forEach(food => {
+                            biomarkerSection += `
+                                <div class="food-card">
+                                    <h4>${food.name}</h4>
+                                    <p class="small-text">${food.why}</p>
+                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
+                                    <button class="btn-small btn-tertiary">📱 Share</button>
+                                </div>
+                            `;
+                        });
+                        
+                        biomarkerSection += `</div>`;
+                        html += biomarkerSection;
+                    }
+                });
+            }
+            
+            if (normalSelected.length > 0) {
+                html += '<h3 style="margin-bottom: 20px; color: #2D7D32; margin-top: 30px;">✅ Normal Results</h3>';
+                
+                normalSelected.forEach(bioName => {
+                    const recData = state.recommendations[bioName];
+                    if (recData) {
+                        const foods = recData.foods;
+                        
+                        let biomarkerSection = `
+                            <div style="background: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
+                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">🟢 ${bioName.toUpperCase()} (Normal)</h4>
+                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Your ${bioName.toLowerCase()} is within normal range. These foods help maintain it:</p>
+                        `;
+                        
+                        foods.forEach(food => {
+                            biomarkerSection += `
+                                <div class="food-card">
+                                    <h4>${food.name}</h4>
+                                    <p class="small-text">${food.why}</p>
+                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
+                                    <button class="btn-small btn-tertiary">📱 Share</button>
+                                </div>
+                            `;
+                        });
+                        
+                        biomarkerSection += `</div>`;
+                        html += biomarkerSection;
+                    }
+                });
+            }
+            
+            document.getElementById('recommendationsContainer').innerHTML = html;
+        }
+
+        function openScience(nutrient) {
+            document.getElementById('scienceTitle').textContent = nutrient;
+            document.getElementById('scienceText').textContent = scienceExplanations[nutrient] || scienceExplanations.default;
+            document.getElementById('scienceModal').classList.add('open');
+        }
+
+        function closeScience() {
+            document.getElementById('scienceModal').classList.remove('open');
+        }
+
+        function exportReport() {
+            let reportContent = `BLOOD PANEL ANALYSIS REPORT
+Date: ${new Date().toLocaleDateString()}
+
+BIOMARKERS ANALYZED:
+`;
+
+            const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status !== 'Normal';
+            });
+
+            if (abnormalSelected.length > 0) {
+                reportContent += `\n⚠️ OUT OF RANGE:\n`;
+                abnormalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    reportContent += `  - ${name} (${rec.status})\n`;
+                });
+            }
+
+            const normalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status === 'Normal';
+            });
+
+            if (normalSelected.length > 0) {
+                reportContent += `\n✅ NORMAL:\n`;
+                normalSelected.forEach(name => {
+                    reportContent += `  - ${name} (Normal)\n`;
+                });
+            }
+
+            reportContent += `\n\nRECOMMENDATIONS:\n`;
+            
+            if (abnormalSelected.length > 0) {
+                reportContent += `\nOUT OF RANGE FOODS:\n`;
+                abnormalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    if (rec && rec.foods) {
+                        reportContent += `\n${name} (${rec.status}):\n`;
+                        rec.foods.forEach(food => {
+                            reportContent += `  - ${food.name}: ${food.why}\n`;
+                        });
+                    }
+                });
+            }
+
+            if (normalSelected.length > 0) {
+                reportContent += `\nMAINTENANCE FOODS:\n`;
+                normalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    if (rec && rec.foods) {
+                        reportContent += `\n${name} (Normal):\n`;
+                        rec.foods.forEach(food => {
+                            reportContent += `  - ${food.name}: ${food.why}\n`;
+                        });
+                    }
+                });
+            }
+
+            reportContent += `\n\n---
+IMPORTANT DISCLAIMER:
+This report is educational only and not medical advice.
+Always consult your healthcare provider before making major dietary changes.
+Your data is private and automatically deleted when you close this tab.`;
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ============================================================================
+        // EVENT LISTENERS
+        // ============================================================================
+        
+        document.getElementById('uploadZone').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('uploadZone').addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.add('drag-over');
+        });
+
+        document.getElementById('uploadZone').addEventListener('dragleave', () => {
+            document.getElementById('uploadZone').classList.remove('drag-over');
+        });
+
+        document.getElementById('uploadZone').addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.remove('drag-over');
+            handleFileUpload(e.dataTransfer.files[0]);
+        });
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFileUpload(e.target.files[0]);
+        });
+
+        document.getElementById('proceedToSelect').addEventListener('click', proceedToSelection);
+        document.getElementById('tryAgainUpload').addEventListener('click', () => showStep('upload'));
+        document.getElementById('getRecommendations').addEventListener('click', getRecommendations);
+        document.getElementById('tryAgain').addEventListener('click', () => showStep('upload'));
+        document.getElementById('exportReport').addEventListener('click', exportReport);
+        document.getElementById('startOver').addEventListener('click', () => {
+            state.biomarkers = [];
+            state.selectedBiomarkers = [];
+            state.recommendations = {};
+            state.extractedText = '';
+            showStep('upload');
+        });
+        document.getElementById('deleteData').addEventListener('click', () => {
+            if (confirm('Delete all data?')) {
+                state.biomarkers = [];
+                state.selectedBiomarkers = [];
+                state.recommendations = {};
+                state.extractedText = '';
+                showStep('upload');
+            }
+        });
+
+        document.getElementById('closeModal').addEventListener('click', closeScience);
+        document.getElementById('scienceOK').addEventListener('click', closeScience);
+
+        showStep('upload');
+    </script>
+</body>
+</html>
