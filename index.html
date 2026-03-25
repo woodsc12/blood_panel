@@ -473,6 +473,67 @@
             width: 0%;
             transition: width 0.3s;
         }
+
+        .privacy-section {
+            background: white;
+            border-radius: 12px;
+            border: 0.5px solid #dde8de;
+            padding: 20px 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .privacy-section-title {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #4a9a6a;
+            margin-bottom: 16px;
+        }
+
+        .privacy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 0.5px solid #eef4ef;
+        }
+
+        .privacy-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .privacy-item:first-of-type {
+            padding-top: 0;
+        }
+
+        .privacy-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #eef7f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .privacy-text strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e3a2a;
+            margin-bottom: 2px;
+        }
+
+        .privacy-text span {
+            font-size: 12px;
+            color: #6a8a72;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -590,10 +651,38 @@
             </div>
         </div>
 
+        <!-- PRIVACY SECTION -->
+        <div class="privacy-section">
+            <div class="privacy-section-title">Your privacy, our priority</div>
+
+            <div class="privacy-item">
+                <div class="privacy-icon">🔒</div>
+                <div class="privacy-text">
+                    <strong>Your results stay on your device</strong>
+                    <span>Never uploaded, never stored, never seen by anyone but you.</span>
+                </div>
+            </div>
+
+            <div class="privacy-item">
+                <div class="privacy-icon">🌿</div>
+                <div class="privacy-text">
+                    <strong>Safer than pasting your labs into an AI chatbot</strong>
+                    <span>Unlike other AI tools, nothing here ever leaves your browser — not a single byte.</span>
+                </div>
+            </div>
+
+            <div class="privacy-item">
+                <div class="privacy-icon">🛡️</div>
+                <div class="privacy-text">
+                    <strong>No account needed, no data collected</strong>
+                    <span>Your health information is yours alone. We built it that way on purpose.</span>
+                </div>
+            </div>
+        </div>
+
         <!-- FOOTER -->
         <footer>
             <p>Not a medical device. Consult your healthcare provider.</p>
-            <button class="btn-danger btn-small" id="deleteData">🗑️ Delete All Data</button>
         </footer>
     </div>
 
@@ -1502,16 +1591,6 @@ Your data is private and automatically deleted when you close this tab.`;
             state.extractedText = '';
             showStep('upload');
         });
-        document.getElementById('deleteData').addEventListener('click', () => {
-            if (confirm('Delete all data?')) {
-                state.biomarkers = [];
-                state.selectedBiomarkers = [];
-                state.recommendations = {};
-                state.extractedText = '';
-                showStep('upload');
-            }
-        });
-
         document.getElementById('closeModal').addEventListener('click', closeScience);
         document.getElementById('scienceOK').addEventListener('click', closeScience);
 
