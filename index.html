@@ -310,6 +310,35 @@
         .btn-danger:hover {
             background: #ad1457;
         }
+
+        .btn-olive {
+            background: #6d7c3a;
+            color: white;
+        }
+
+        .btn-olive:hover {
+            background: #556030;
+        }
+
+        .bio-description {
+            background: rgba(255,255,255,0.75);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #3a4a3a;
+            line-height: 1.6;
+            border: 1px solid rgba(55,138,221,0.15);
+        }
+
+        .bio-description-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #378ADD;
+            margin-bottom: 4px;
+        }
         
         .btn-small {
             padding: 8px 12px;
@@ -570,7 +599,7 @@
             
             <input id="fileInput" type="file" accept="application/pdf,image/*" />
             
-            <p class="small-text">Your data is 100% private. Your pdf is read directly on your device and never transmitted anywhere.</p>
+            <p class="small-text">Your data is private and automatically deleted when you close this tab.</p>
             
             <div id="uploadStatus"></div>
         </div>
@@ -605,8 +634,7 @@
             <p class="small-text">Can't find a biomarker? We'll skip it. Want to add more? You can select from the next screen.</p>
             
             <button class="btn-primary" id="proceedToSelect">Continue to Selection</button>
-            <button class="btn-danger" id="backFromReview">← Back</button>
-            <button class="btn-danger" id="tryAgainUpload">Try Another File</button>
+            <button class="btn-olive" id="backFromReview">← Back</button>
             
             <div id="reviewStatus"></div>
         </div>
@@ -622,8 +650,8 @@
             <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
             
             <button class="btn-primary" id="getRecommendations">Get Recommendations</button>
-            <button class="btn-danger" id="backFromSelect">← Back</button>
-            <button class="btn-danger" id="tryAgain">Try Another File</button>
+            <button class="btn-olive" id="backFromSelect">← Back</button>
+            <button class="btn-olive" id="tryAgain">🏠 Home</button>
             
             <div id="selectStatus"></div>
         </div>
@@ -636,8 +664,8 @@
             
             <div class="actions">
                 <button class="btn-primary" id="exportReport">📥 Export Report</button>
-                <button class="btn-danger" id="backFromRecommend">← Back</button>
-                <button class="btn-danger" id="startOver">🔄 Start Over</button>
+                <button class="btn-olive" id="backFromRecommend">← Back</button>
+                <button class="btn-olive" id="startOver">🏠 Home</button>
             </div>
         </div>
 
@@ -1366,7 +1394,50 @@
         // ============================================================================
         // RECOMMENDATIONS
         // ============================================================================
-        
+
+        const biomarkerDescriptions = {
+            'WBC': 'White blood cells are your body\'s immune army — they patrol your bloodstream and fight off infections. When levels are off, it can simply mean your body is responding to something like a cold or mild stress. It\'s rarely cause for alarm on its own.',
+            'RBC': 'Red blood cells are like delivery trucks — they carry oxygen from your lungs to every cell in your body. When counts are off, your body may not be getting quite enough oxygen, which can leave you feeling tired or short of breath.',
+            'Hemoglobin': 'Hemoglobin is the protein inside red blood cells that actually carries the oxygen. Think of it as the cargo in the delivery truck. Low hemoglobin is one of the most common reasons people feel unusually fatigued or run down.',
+            'Hematocrit': 'Hematocrit measures what percentage of your blood is made up of red blood cells. It\'s a broad snapshot of how well your blood can carry oxygen throughout your body. Diet, hydration, and iron levels all play a role.',
+            'MCV': 'MCV tells us about the size of your red blood cells. Cells that are too big or too small can\'t carry oxygen as efficiently. This is often linked to levels of folate or B12 in your diet — both easy to address through food.',
+            'MCH': 'MCH measures how much hemoglobin is packed into each red blood cell. It works alongside MCV to give your doctor a clearer picture of how your red blood cells are functioning and whether nutrients like iron or B12 may need attention.',
+            'MCHC': 'MCHC measures the concentration of hemoglobin in your red blood cells. It helps identify whether your cells are properly filled with the oxygen-carrying protein they need to do their job well.',
+            'Platelets': 'Platelets are tiny cells that help your blood clot when you have a cut or injury — think of them as your body\'s repair crew. When levels are within range, your body can heal efficiently and prevent excess bleeding.',
+            'MPV': 'MPV measures the average size of your platelets. Larger platelets tend to be more active. This number helps give context to your platelet count and is usually looked at alongside it rather than on its own.',
+            'Glucose': 'Glucose is your body\'s main fuel source — it\'s the sugar your cells use for energy. When fasting glucose runs high, it can be a sign your body is having trouble managing blood sugar. Diet, exercise, and sleep all have a meaningful impact here.',
+            'BUN': 'BUN stands for Blood Urea Nitrogen — it\'s a waste product your kidneys filter out of your blood. Think of your kidneys as a water treatment plant. When BUN is slightly off, hydration and protein intake are usually the first things to look at.',
+            'Creatinine': 'Creatinine is another waste product filtered by your kidneys, produced naturally by muscle activity. It\'s a reliable indicator of how well your kidneys are doing their job. Staying well hydrated supports healthy creatinine levels.',
+            'eGFR': 'eGFR estimates how well your kidneys are filtering your blood each minute — like a flow rate reading on your kidney\'s filtration system. Higher numbers are better. It\'s one of the most important markers of long-term kidney health.',
+            'Sodium': 'Sodium helps regulate fluid balance and supports nerve and muscle function — it\'s essentially your body\'s electrical conductor. Most people get plenty through food, so levels that are off usually relate to hydration rather than diet.',
+            'Potassium': 'Potassium works with sodium to keep your heart rhythm steady and muscles functioning properly. Think of them as two sides of a balance scale. Fruits, vegetables, and whole foods are your best natural sources.',
+            'Chloride': 'Chloride works alongside sodium and potassium to maintain fluid balance and support digestion. It rarely gets much attention on its own, but it\'s a quiet and important part of keeping your body\'s chemistry in balance.',
+            'CO2': 'This measures bicarbonate in your blood, which helps keep your body\'s pH stable — like a natural buffer system. It\'s usually evaluated alongside other electrolytes to get a full picture of your body\'s acid-base balance.',
+            'Calcium': 'Calcium isn\'t just for bones — it also helps your heart beat, muscles contract, and nerves send signals. Most people think of dairy, but leafy greens and fortified foods are great sources too.',
+            'Phosphorus': 'Phosphorus works closely with calcium to build strong bones and teeth. It\'s also involved in how your body produces energy. Most people get enough through food, so levels outside the range are usually worth a closer look.',
+            'Magnesium': 'Magnesium is involved in over 300 processes in your body — from energy production to muscle relaxation to blood sugar control. Many people don\'t get quite enough through diet, making it one of the more common quiet deficiencies.',
+            'Total Protein': 'Total protein measures the combined level of albumin and globulin in your blood. Protein is the building block your body uses for tissue repair, immune function, and keeping fluid in the right places.',
+            'Albumin': 'Albumin is your blood\'s main transport protein — it carries hormones, vitamins, and medications through your bloodstream. It\'s also a good marker of overall nutrition. Levels respond well to adequate protein intake.',
+            'Globulin': 'Globulins are a group of proteins that support your immune system and help transport nutrients. They work alongside albumin to keep your blood\'s chemistry balanced and your defenses strong.',
+            'Total Bilirubin': 'Bilirubin is a yellow pigment produced when your body breaks down old red blood cells — your liver then processes and removes it. Mildly elevated levels are common and often harmless, but your liver loves leafy greens and hydration.',
+            'Direct Bilirubin': 'Direct bilirubin is the portion that\'s already been processed by your liver and is ready to be excreted. It helps pinpoint whether any bilirubin issue is coming from the liver itself or somewhere else in the process.',
+            'ALT': 'ALT is an enzyme found mainly in your liver. When liver cells are under stress, they release more ALT into your blood — think of it as a signal flare. Alcohol, certain medications, and fatty foods can all influence this number.',
+            'AST': 'AST is another enzyme that signals liver and muscle health. It\'s often looked at alongside ALT to get a fuller picture of what\'s happening. Mildly elevated levels can be influenced by exercise, diet, or medication.',
+            'ALP': 'ALP is an enzyme linked to your liver and bones. When it\'s outside the normal range, it can point to changes in either. It\'s typically evaluated alongside other liver markers to understand the full context.',
+            'Total Cholesterol': 'Total cholesterol is the overall measure of all cholesterol types in your blood. On its own it\'s a starting point, not the full story — your doctor will look at HDL, LDL, and triglycerides together to get a clearer picture of heart health.',
+            'HDL': 'HDL is often called "good cholesterol" because it actually carries cholesterol away from your arteries and back to your liver for removal — like a cleanup crew. Higher HDL is generally better for your heart.',
+            'LDL': 'LDL is often called "bad cholesterol" — it\'s a fatty substance that travels through your blood. When there\'s too much, it can slowly build up on artery walls like mineral deposits in a pipe. Diet and lifestyle changes can make a real difference here.',
+            'Triglycerides': 'Triglycerides are a type of fat stored in your blood for energy. When levels run high, it\'s often linked to excess sugar, refined carbs, or alcohol in the diet. Omega-3 rich foods and cutting back on sugary drinks can help significantly.',
+            'Iron': 'Iron is essential for making hemoglobin — the protein that carries oxygen in your blood. Without enough, your body\'s oxygen delivery slows down, which can leave you feeling tired and foggy. Pairing iron-rich foods with vitamin C boosts absorption.',
+            'TIBC': 'TIBC measures how well your blood can transport iron — it reflects the capacity of transferrin, the protein that carries iron around your body. It\'s usually evaluated alongside iron and ferritin to get the full picture of your iron status.',
+            'Ferritin': 'Ferritin is your body\'s iron storage tank — it holds onto iron so your body can draw on it later. When it\'s low, your reserves are running dry, which can leave you feeling tired, foggy, or short of breath even when other markers look fine.',
+            'Vitamin B12': 'B12 is essential for healthy nerve function and red blood cell production. Your body can\'t make it on its own, so it has to come from food or supplements. It\'s especially important for anyone eating a plant-based diet.',
+            'Folate': 'Folate is a B vitamin that supports cell growth and the production of healthy red blood cells. It\'s particularly important during pregnancy, but everyone needs it. Dark leafy greens, beans, and fortified foods are excellent sources.',
+            'TSH': 'TSH is a signal your brain sends to your thyroid — think of it like a thermostat dial. When TSH is high, your brain is working harder to wake up a sluggish thyroid. Your thyroid controls energy, metabolism, and mood, so this one is worth following closely.',
+            'Free T4': 'Free T4 is the active thyroid hormone that circulates in your blood. It helps regulate your metabolism, energy levels, and body temperature. It\'s typically looked at alongside TSH to get a complete picture of thyroid function.',
+            'Blood Pressure': 'Blood pressure measures the force of blood pushing against your artery walls as your heart pumps. Think of it like water pressure in a garden hose — too high for too long puts strain on the whole system. Diet, exercise, and stress management all play a meaningful role.'
+        };
+
         function getRecommendations() {
             state.recommendations = {};
             
@@ -1406,10 +1477,16 @@
                         const status = recData.status;
                         const foods = recData.foods;
                         const statusIcon = status === 'High' ? '🔴' : '🔵';
+                        const description = biomarkerDescriptions[bioName] || '';
                         
                         let biomarkerSection = `
                             <div style="background: #E6F1FB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #378ADD;">
                                 <h4 style="margin-bottom: 10px; color: #2C2C2C;">${statusIcon} ${bioName.toUpperCase()} (${status})</h4>
+                                ${description ? `
+                                <div class="bio-description">
+                                    <div class="bio-description-label">What is this?</div>
+                                    ${description}
+                                </div>` : ''}
                                 <p style="font-size: 13px; color: #666; margin-bottom: 15px;">These foods can help support your ${bioName.toLowerCase()}:</p>
                         `;
                         
@@ -1436,10 +1513,16 @@
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const foods = recData.foods;
+                        const description = biomarkerDescriptions[bioName] || '';
                         
                         let biomarkerSection = `
                             <div style="background: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
                                 <h4 style="margin-bottom: 10px; color: #2C2C2C;">🟢 ${bioName.toUpperCase()} (Normal)</h4>
+                                ${description ? `
+                                <div class="bio-description">
+                                    <div class="bio-description-label">What is this?</div>
+                                    ${description}
+                                </div>` : ''}
                                 <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Your ${bioName.toLowerCase()} is within normal range. These foods help maintain it:</p>
                         `;
                         
@@ -1578,7 +1661,6 @@ Your data is private and automatically deleted when you close this tab.`;
 
         document.getElementById('proceedToSelect').addEventListener('click', proceedToSelection);
         document.getElementById('backFromReview').addEventListener('click', () => showStep('upload'));
-        document.getElementById('tryAgainUpload').addEventListener('click', () => showStep('upload'));
         document.getElementById('getRecommendations').addEventListener('click', getRecommendations);
         document.getElementById('backFromSelect').addEventListener('click', () => showStep('review'));
         document.getElementById('tryAgain').addEventListener('click', () => showStep('upload'));
