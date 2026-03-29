@@ -126,12 +126,15 @@
         }
         
         .disclaimer {
-            background: #E8F5E9;
+            background: white;
             color: #1b5e20;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 13px;
+            border-left: 4px solid #2D7D32;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 0.5px solid #dde8de;
             border-left: 4px solid #2D7D32;
         }
         
@@ -576,11 +579,6 @@
             </div>
         </header>
 
-        <!-- MEDICAL DISCLAIMER -->
-        <div id="disclaimer" class="disclaimer hidden">
-            ⚠️ This tool is educational only, not medical advice. Always consult your healthcare provider before making major dietary changes, especially if you take medications.
-        </div>
-
         <!-- STEP 1: UPLOAD -->
         <div id="step-upload" class="card">
             <h2>Upload Your Blood Panel</h2>
@@ -706,6 +704,11 @@
                     <span>Your health information is yours alone. We built it that way on purpose.</span>
                 </div>
             </div>
+        </div>
+
+        <!-- MEDICAL DISCLAIMER -->
+        <div id="disclaimer" class="disclaimer hidden">
+            ⚠️ This tool is educational only, not medical advice. Always consult your healthcare provider before making major dietary changes, especially if you take medications.
         </div>
 
         <!-- FOOTER -->
