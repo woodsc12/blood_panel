@@ -744,11 +744,22 @@
             { name: 'Hemoglobin', regex: /hemoglobin|hgb\b|hb\b/i },
             { name: 'Hematocrit', regex: /hematocrit|hct\b/i },
             { name: 'MCV', regex: /\bmcv\b|mean\s+corpuscular\s+volume/i },
-            { name: 'MCH', regex: /\bmch\b|mean\s+corpuscular\s+hemoglobin/i },
+            { name: 'MCH', regex: /\bmch\b(?!\s*c)|mean\s+corpuscular\s+hemoglobin(?!\s+con)/i },
             { name: 'MCHC', regex: /\bmchc\b|mean\s+corpuscular\s+hemoglobin\s+concentration/i },
             { name: 'Platelets', regex: /platelet|thrombocyte/i },
             { name: 'MPV', regex: /\bmpv\b|mean\s+platelet/i },
-            { name: 'Glucose', regex: /glucose|fasting\s+glucose/i },
+            { name: 'RDW', regex: /\brdw\b|red\s+cell\s+distribution\s+width|red\s+blood\s+cell\s+distribution/i },
+            { name: 'Neutrophil %', regex: /neutrophil\s*%|neutro\s*%|neut\s*%|neutrophil\s*auto\s*%|%\s*neutrophil/i },
+            { name: 'Lymphocyte %', regex: /lymphocyte\s*%|lymph\s*%|lymp\s*%|lymphocyte\s*auto\s*%|%\s*lymph/i },
+            { name: 'Monocyte %', regex: /monocyte\s*%|mono\s*%|monocyte\s*auto\s*%|%\s*mono/i },
+            { name: 'Eosinophil %', regex: /eosinophil\s*%|eos\s*%|eosino\s*%|eosinophil\s*auto\s*%|%\s*eos/i },
+            { name: 'Basophil %', regex: /basophil\s*%|baso\s*%|basophil\s*auto\s*%|%\s*baso/i },
+            { name: 'Neutrophil Absolute', regex: /neutro\s*absolute|neutrophil\s*absolute|neutro\s*abs|abs\s*neutro|absolute\s*neutro/i },
+            { name: 'Lymphocyte Absolute', regex: /lymph\s*absolute|lymphocyte\s*absolute|lymph\s*abs|abs\s*lymph|absolute\s*lymph/i },
+            { name: 'Monocyte Absolute', regex: /mono\s*absolute|monocyte\s*absolute|mono\s*abs|abs\s*mono|absolute\s*mono/i },
+            { name: 'Eosinophil Absolute', regex: /eos\s*absolute|eosinophil\s*absolute|eos\s*abs|abs\s*eos|absolute\s*eos/i },
+            { name: 'Basophil Absolute', regex: /baso\s*absolute|basophil\s*absolute|baso\s*abs|abs\s*baso|absolute\s*baso/i },
+            { name: 'Glucose', regex: /\bglucose\b|fasting\s+glucose/i },
             { name: 'BUN', regex: /\bbun\b|blood\s+urea\s+nitrogen/i },
             { name: 'Creatinine', regex: /creatinine|serum\s+creatinine/i },
             { name: 'eGFR', regex: /egfr|estimated\s+glomerular\s+filtration/i },
@@ -759,17 +770,20 @@
             { name: 'Calcium', regex: /\bcalcium\b|serum\s+calcium|ca\s*\(/i },
             { name: 'Phosphorus', regex: /phosphorus|phosphate/i },
             { name: 'Magnesium', regex: /magnesium|serum\s+magnesium|mg\s*\(/i },
+            { name: 'Anion Gap', regex: /\bagap\b|anion\s+gap/i },
             { name: 'Total Protein', regex: /total\s+protein|tp\b/i },
             { name: 'Albumin', regex: /albumin\b/i },
             { name: 'Globulin', regex: /globulin\b/i },
+            { name: 'A/G Ratio', regex: /a\/g\s*ratio|albumin.*globulin\s*ratio|ag\s*ratio/i },
             { name: 'Total Bilirubin', regex: /total\s+bilirubin|bilirubin\s*\(/i },
             { name: 'Direct Bilirubin', regex: /direct\s+bilirubin|conjugated\s+bilirubin/i },
             { name: 'ALT', regex: /\balt\b|alanine\s+aminotransferase/i },
             { name: 'AST', regex: /\bast\b|aspartate\s+aminotransferase/i },
-            { name: 'ALP', regex: /\balp\b|alkaline\s+phosphatase/i },
+            { name: 'ALP', regex: /\balp\b|alk\s*phos|alkaline\s+phosphatase/i },
             { name: 'Total Cholesterol', regex: /total\s+cholesterol|cholesterol\b/i },
             { name: 'HDL', regex: /\bhdl\b|high.?density.*lipoprotein/i },
             { name: 'LDL', regex: /\bldl\b|low.?density.*lipoprotein/i },
+            { name: 'VLDL', regex: /\bvldl\b|very\s+low.?density.*lipoprotein/i },
             { name: 'Triglycerides', regex: /triglyceride/i },
             { name: 'Iron', regex: /\biron\b(?!\s*binding)|serum\s+iron(?!\s*binding)/i },
             { name: 'TIBC', regex: /\btibc\b|total\s+iron\s+binding/i },
@@ -778,7 +792,20 @@
             { name: 'Folate', regex: /folate|folic\s+acid/i },
             { name: 'TSH', regex: /\btsh\b|thyroid\s+stimulating\s+hormone/i },
             { name: 'Free T4', regex: /free\s+t4|thyroxine/i },
-            { name: 'Blood Pressure', regex: /blood\s+pressure|bp|systolic|diastolic/i }
+            { name: 'Systolic BP', regex: /systolic/i },
+            { name: 'Diastolic BP', regex: /diastolic/i },
+            { name: 'UA Leukocyte Esterase', regex: /leuk\s*esterase|leukocyte\s*esterase|ua\s*leuk/i },
+            { name: 'UA Nitrite', regex: /ua\s*nitrite|urine\s*nitrite|\bnitrite\b/i },
+            { name: 'UA Urobilinogen', regex: /urobilinogen/i },
+            { name: 'UA Bilirubin', regex: /ua\s*bili(?!rubin\s+total|\s+total|\s+direct)|urine\s*bilirubin/i },
+            { name: 'UA Protein', regex: /ua\s*protein|urine\s*protein|\bprotein\s*ua\b/i },
+            { name: 'UA Blood', regex: /ua\s*blood|urine\s*blood|\bblood\s*ua\b/i },
+            { name: 'UA Ketones', regex: /ua\s*ketone|urine\s*ketone|\bketone/i },
+            { name: 'UA Glucose', regex: /ua\s*glucose|urine\s*glucose/i },
+            { name: 'UA Specific Gravity', regex: /specific\s*gravity|spec\s*grav|ua\s*spec/i },
+            { name: 'UA pH', regex: /ua\s*ph|urine\s*ph|\bph\b(?=.*urin)/i },
+            { name: 'UA Clarity', regex: /ua\s*clarity|urine\s*clarity|\bclarity\b/i },
+            { name: 'UA Color', regex: /ua\s*color|urine\s*color|\bcolor\b(?=.*urin)/i }
         ];
 
         // ============================================================================
@@ -965,6 +992,174 @@
                 { name: 'Kale', nutrient: 'potassium', why: 'Rich in potassium' },
                 { name: 'Banana', nutrient: 'potassium', why: 'Excellent potassium' },
                 { name: 'Garlic', nutrient: 'allicin', why: 'Natural blood pressure support' }
+            ],
+            'Systolic BP': [
+                { name: 'Beets', nutrient: 'nitrates', why: 'Natural nitrates help relax blood vessels' },
+                { name: 'Leafy Greens', nutrient: 'potassium', why: 'Potassium balances sodium and eases pressure' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Flavonoids support healthy artery function' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Soluble fiber linked to lower blood pressure' }
+            ],
+            'Diastolic BP': [
+                { name: 'Dark Chocolate', nutrient: 'magnesium', why: 'Flavanols help relax blood vessels' },
+                { name: 'Banana', nutrient: 'potassium', why: 'Potassium helps muscles including the heart relax' },
+                { name: 'Yogurt', nutrient: 'calcium', why: 'Calcium supports healthy vessel tone' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Allicin has natural vasodilating effects' }
+            ],
+            'RDW': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate supports uniform red blood cell production' },
+                { name: 'Eggs', nutrient: 'vitamin b12', why: 'B12 essential for consistent cell sizing' },
+                { name: 'Lentils', nutrient: 'iron', why: 'Iron supports healthy red blood cell formation' },
+                { name: 'Fortified Cereals', nutrient: 'iron', why: 'Provides iron and B vitamins together' }
+            ],
+            'Neutrophil %': [
+                { name: 'Garlic', nutrient: 'allicin', why: 'Supports neutrophil activity against infection' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Anti-inflammatory support for immune balance' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Gut health influences immune cell balance' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate needed for white blood cell production' }
+            ],
+            'Lymphocyte %': [
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Vitamin C supports lymphocyte function' },
+                { name: 'Almonds', nutrient: 'vitamin e', why: 'Vitamin E supports immune cell health' },
+                { name: 'Sunflower Seeds', nutrient: 'vitamin e', why: 'Rich in immune-supporting vitamin E' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Probiotics support lymphocyte balance' }
+            ],
+            'Monocyte %': [
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Curcumin helps regulate monocyte activity' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants reduce monocyte-triggering inflammation' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Polyphenols support healthy immune balance' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Oleic acid has anti-inflammatory properties' }
+            ],
+            'Eosinophil %': [
+                { name: 'Quercetin Foods', nutrient: 'quercetin', why: 'Quercetin has natural anti-allergic properties' },
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Omega-3s reduce inflammatory signaling' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Supports healthy inflammatory response' },
+                { name: 'Pineapple', nutrient: 'bromelain', why: 'Bromelain has anti-inflammatory effects' }
+            ],
+            'Basophil %': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Reduces inflammatory signaling linked to basophils' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports balanced immune response' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants support immune cell balance' },
+                { name: 'Green Tea', nutrient: 'EGCG', why: 'EGCG helps modulate immune activity' }
+            ],
+            'Neutrophil Absolute': [
+                { name: 'Garlic', nutrient: 'allicin', why: 'Supports neutrophil activity against infection' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Gut health influences immune cell counts' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate needed for white blood cell production' },
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Vitamin C supports immune cell production' }
+            ],
+            'Lymphocyte Absolute': [
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Supports lymphocyte production' },
+                { name: 'Almonds', nutrient: 'vitamin e', why: 'Vitamin E supports lymphocyte health' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Supports immune cell balance' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate essential for cell production' }
+            ],
+            'Monocyte Absolute': [
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Helps regulate monocyte activity' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Anti-inflammatory oleic acid' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Polyphenols support immune balance' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Reduces inflammation-driven monocyte elevation' }
+            ],
+            'Eosinophil Absolute': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Omega-3s reduce inflammatory signaling' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Anti-inflammatory support' },
+                { name: 'Pineapple', nutrient: 'bromelain', why: 'Natural anti-inflammatory enzyme' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports healthy immune response' }
+            ],
+            'Basophil Absolute': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Reduces inflammatory signaling' },
+                { name: 'Green Tea', nutrient: 'EGCG', why: 'Modulates immune activity' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports balanced immune response' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants support immune balance' }
+            ],
+            'Anion Gap': [
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration supports electrolyte balance' },
+                { name: 'Leafy Greens', nutrient: 'potassium', why: 'Potassium helps maintain acid-base balance' },
+                { name: 'Bananas', nutrient: 'potassium', why: 'Supports electrolyte equilibrium' },
+                { name: 'Avocado', nutrient: 'potassium', why: 'Rich in potassium for electrolyte balance' }
+            ],
+            'A/G Ratio': [
+                { name: 'Chicken', nutrient: 'protein', why: 'High-quality protein supports albumin production' },
+                { name: 'Eggs', nutrient: 'protein', why: 'Complete protein for healthy protein balance' },
+                { name: 'Fish', nutrient: 'protein', why: 'Lean protein supports albumin levels' },
+                { name: 'Legumes', nutrient: 'protein', why: 'Plant-based protein for overall protein balance' }
+            ],
+            'VLDL': [
+                { name: 'Salmon', nutrient: 'omega3', why: 'Omega-3s directly lower VLDL production' },
+                { name: 'Chia Seeds', nutrient: 'omega3', why: 'Plant-based omega-3s reduce triglycerides' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Soluble fiber reduces VLDL cholesterol' },
+                { name: 'Avocado', nutrient: 'monofat', why: 'Healthy fats improve lipid balance' }
+            ],
+            'UA Leukocyte Esterase': [
+                { name: 'Water', nutrient: 'hydration', why: 'Flushing the urinary tract reduces irritation' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'Proanthocyanidins may reduce bacterial adhesion' },
+                { name: 'Probiotic Yogurt', nutrient: 'probiotics', why: 'Supports healthy urinary tract bacteria balance' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Natural antimicrobial properties' }
+            ],
+            'UA Nitrite': [
+                { name: 'Water', nutrient: 'hydration', why: 'Staying hydrated helps flush bacteria from the urinary tract' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May help prevent bacterial adhesion to urinary tract walls' },
+                { name: 'Probiotic Foods', nutrient: 'probiotics', why: 'Supports healthy urinary and gut microbiome' },
+                { name: 'Vitamin C Foods', nutrient: 'vitamin c', why: 'Acidifies urine which may inhibit bacterial growth' }
+            ],
+            'UA Urobilinogen': [
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Supports liver function and bilirubin processing' },
+                { name: 'Beets', nutrient: 'betaine', why: 'Betaine supports liver detoxification pathways' },
+                { name: 'Artichoke', nutrient: 'inulin', why: 'Supports bile flow and liver health' },
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration supports waste excretion' }
+            ],
+            'UA Bilirubin': [
+                { name: 'Leafy Greens', nutrient: 'chlorophyll', why: 'Supports liver detoxification' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Supports healthy bile flow and liver function' },
+                { name: 'Beets', nutrient: 'betaine', why: 'Supports liver processing of bilirubin' },
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration helps the liver process and excrete waste' }
+            ],
+            'UA Protein': [
+                { name: 'Water', nutrient: 'hydration', why: 'Supports kidney filtration function' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Antioxidants protect kidney cells' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Supports kidney health' },
+                { name: 'Fish', nutrient: 'omega3', why: 'Omega-3s support kidney function' }
+            ],
+            'UA Blood': [
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration supports urinary tract health' },
+                { name: 'Leafy Greens', nutrient: 'vitamin k', why: 'Vitamin K supports healthy blood clotting' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May support urinary tract health' },
+                { name: 'Beets', nutrient: 'antioxidant', why: 'Supports overall urinary health' }
+            ],
+            'UA Ketones': [
+                { name: 'Complex Carbs', nutrient: 'carbohydrate', why: 'Adequate carbs reduce fat-burning ketone production' },
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration helps excrete ketones efficiently' },
+                { name: 'Sweet Potato', nutrient: 'carbohydrate', why: 'Healthy carbs reduce excessive ketosis' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Steady carb release prevents ketone spikes' }
+            ],
+            'UA Glucose': [
+                { name: 'Broccoli', nutrient: 'fiber', why: 'Low glycemic, helps manage blood sugar' },
+                { name: 'Chia Seeds', nutrient: 'fiber', why: 'Slows glucose absorption' },
+                { name: 'Cinnamon', nutrient: 'chromium', why: 'May help regulate blood sugar levels' },
+                { name: 'Leafy Greens', nutrient: 'magnesium', why: 'Magnesium supports insulin sensitivity' }
+            ],
+            'UA Specific Gravity': [
+                { name: 'Water', nutrient: 'hydration', why: 'Primary way to normalize urine concentration' },
+                { name: 'Cucumber', nutrient: 'hydration', why: 'High water content supports hydration' },
+                { name: 'Watermelon', nutrient: 'hydration', why: 'Naturally hydrating fruit' },
+                { name: 'Herbal Tea', nutrient: 'hydration', why: 'Caffeine-free hydration support' }
+            ],
+            'UA pH': [
+                { name: 'Leafy Greens', nutrient: 'alkaline', why: 'Alkaline-forming foods help balance urine pH' },
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Despite being acidic, metabolize to alkaline ash' },
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration stabilizes urine pH' },
+                { name: 'Almonds', nutrient: 'alkaline', why: 'Alkaline-forming and nutrient dense' }
+            ],
+            'UA Clarity': [
+                { name: 'Water', nutrient: 'hydration', why: 'The most effective way to clear cloudy urine' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May help reduce urinary tract bacteria' },
+                { name: 'Probiotic Foods', nutrient: 'probiotics', why: 'Supports healthy urinary microbiome' },
+                { name: 'Parsley', nutrient: 'diuretic', why: 'Natural mild diuretic that helps flush the urinary tract' }
+            ],
+            'UA Color': [
+                { name: 'Water', nutrient: 'hydration', why: 'Pale yellow is the goal — hydration gets you there' },
+                { name: 'Cucumber', nutrient: 'hydration', why: 'Supports healthy hydration levels' },
+                { name: 'Watermelon', nutrient: 'hydration', why: 'Naturally hydrating and kidney-friendly' },
+                { name: 'Herbal Tea', nutrient: 'hydration', why: 'Non-caffeinated hydration to normalize color' }
             ]
         };
 
@@ -1022,7 +1217,25 @@
             'Folate': { min: 2.7, max: 17.0, unit: 'ng/mL' },
             'TSH': { min: 0.4, max: 4.0, unit: 'mIU/L' },
             'Free T4': { min: 0.8, max: 1.8, unit: 'ng/dL' },
-            'Blood Pressure': { min: 90, max: 120, unit: 'mmHg' }
+            'Blood Pressure': { min: 90, max: 120, unit: 'mmHg' },
+            'Systolic BP': { min: 90, max: 120, unit: 'mmHg' },
+            'Diastolic BP': { min: 60, max: 80, unit: 'mmHg' },
+            'RDW': { min: 11.5, max: 14.5, unit: '%' },
+            'Neutrophil %': { min: 50, max: 70, unit: '%' },
+            'Lymphocyte %': { min: 20, max: 40, unit: '%' },
+            'Monocyte %': { min: 2, max: 8, unit: '%' },
+            'Eosinophil %': { min: 1, max: 4, unit: '%' },
+            'Basophil %': { min: 0, max: 1, unit: '%' },
+            'Neutrophil Absolute': { min: 1.8, max: 7.7, unit: 'K/uL' },
+            'Lymphocyte Absolute': { min: 1.0, max: 4.8, unit: 'K/uL' },
+            'Monocyte Absolute': { min: 0.2, max: 0.9, unit: 'K/uL' },
+            'Eosinophil Absolute': { min: 0.0, max: 0.45, unit: 'K/uL' },
+            'Basophil Absolute': { min: 0.0, max: 0.2, unit: 'K/uL' },
+            'Anion Gap': { min: 8, max: 16, unit: 'mEq/L' },
+            'A/G Ratio': { min: 1.0, max: 2.5, unit: 'ratio' },
+            'VLDL': { min: 2, max: 30, unit: 'mg/dL' },
+            'UA Specific Gravity': { min: 1.001, max: 1.030, unit: '' },
+            'UA pH': { min: 4.5, max: 8.0, unit: '' }
         };
 
         // ============================================================================
@@ -1155,9 +1368,14 @@
                                 rangeData = standard;
                             }
                             
-                            // Use the actual line text as the biomarker name to capture variations
-                            // (e.g., "eGFR" vs "eGFR if African American")
-                            const biomarkerName = line.split(/\d/)[0].trim() || pattern.name;
+                            // Clean the OCR name: use text before first digit, strip junk
+                            const rawName = line.split(/\d/)[0].trim();
+                            // Only use OCR name if it's short enough to be a real biomarker name
+                            // and doesn't contain junk phrases — otherwise fall back to pattern name
+                            const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result/i;
+                            const biomarkerName = (rawName && rawName.length <= 60 && !junkPhrases.test(rawName))
+                                ? rawName
+                                : pattern.name;
                             
                             found.push({
                                 name: biomarkerName,
@@ -1445,11 +1663,37 @@
             'TSH': 'TSH is a signal your brain sends to your thyroid — think of it like a thermostat dial. When TSH is high, your brain is working harder to wake up a sluggish thyroid. Your thyroid controls energy, metabolism, and mood, so this one is worth following closely.',
             'Free T4': 'Free T4 is the active thyroid hormone that circulates in your blood. It helps regulate your metabolism, energy levels, and body temperature. It\'s typically looked at alongside TSH to get a complete picture of thyroid function.',
             'Blood Pressure': 'Blood pressure measures the force of blood pushing against your artery walls as your heart pumps. Think of it like water pressure in a garden hose — too high for too long puts strain on the whole system. Diet, exercise, and stress management all play a meaningful role.',
+            'Systolic BP': 'Systolic pressure is the top number in a blood pressure reading — it measures the force your heart exerts each time it beats and pushes blood out. Think of it like the peak pressure in a pump. Staying below 120 is the general target for most adults.',
+            'Diastolic BP': 'Diastolic pressure is the bottom number — it measures the pressure in your arteries when your heart is resting between beats. Think of it as the baseline tension in the system. Both numbers together give your doctor the full picture of your cardiovascular health.',
+            'RDW': 'RDW stands for Red Cell Distribution Width — it measures how much variation there is in the size of your red blood cells. Think of it like checking whether all the delivery trucks are the same size. When they vary too much, it can point to nutritional deficiencies like low iron, B12, or folate.',
+            'Neutrophil %': 'Neutrophils are your body\'s first responders — the most abundant white blood cell and the first to arrive at the site of an infection. Think of them as the frontline infantry of your immune system. Elevated percentages often mean your body is actively fighting something.',
+            'Lymphocyte %': 'Lymphocytes are the strategic arm of your immune system — they include T-cells and B-cells that target specific threats and remember past infections. Think of them as your immune system\'s memory and special forces. They\'re especially important for fighting viruses.',
+            'Monocyte %': 'Monocytes are your immune system\'s cleanup crew — they engulf and destroy pathogens, dead cells, and debris. They also help coordinate the broader immune response. Elevated levels often reflect that your body is dealing with chronic inflammation or infection.',
+            'Eosinophil %': 'Eosinophils are specialized white blood cells that respond to allergies, asthma, and parasitic infections. Think of them as your body\'s allergy responders. When elevated, they often signal the immune system is reacting to something it considers a threat — like pollen, food, or environmental triggers.',
+            'Basophil %': 'Basophils are the rarest white blood cells and play a role in allergic responses and inflammation. Think of them as the alarm bells of the immune system — when triggered, they release histamine and other chemicals. They\'re rarely elevated and usually only notable in specific conditions.',
+            'Neutrophil Absolute': 'This is the actual count of neutrophils in your blood rather than the percentage. It gives a more precise picture of your infection-fighting capacity. Low counts can leave you more vulnerable to infection, while high counts typically mean your body is actively responding to a threat.',
+            'Lymphocyte Absolute': 'This is the absolute count of lymphocytes — your immune system\'s memory and targeted defense cells. The absolute count is more reliable than the percentage alone because it accounts for changes in your overall white blood cell count.',
+            'Monocyte Absolute': 'This measures the actual number of monocytes circulating in your blood. Monocytes are cleanup cells that become macrophages in tissues. The absolute count helps your doctor understand if an elevation is meaningful or just a reflection of overall immune activity.',
+            'Eosinophil Absolute': 'The absolute eosinophil count measures the actual number of these allergy-response cells in your blood. It\'s more diagnostically useful than the percentage when looking for allergic conditions, asthma, or certain infections.',
+            'Basophil Absolute': 'This is the absolute count of basophils — your rarest immune cell. Because they\'re so few in number, even small changes can look significant as a percentage. The absolute count gives a more grounded view of whether levels are truly notable.',
+            'Anion Gap': 'The anion gap measures the balance between positively and negatively charged electrolytes in your blood. Think of it as a check on your blood\'s electrical balance. When it\'s outside the normal range, it can help your doctor identify metabolic issues like acidosis — often related to kidney function, blood sugar, or dehydration.',
+            'A/G Ratio': 'The A/G ratio compares albumin to globulin — two important proteins in your blood. Albumin handles nutrient transport while globulins support immunity. The ratio helps give context to each individual protein level and can help identify whether a protein issue is related to nutrition, liver function, or immune activity.',
+            'VLDL': 'VLDL carries triglycerides through your bloodstream. It\'s sometimes called the "other bad cholesterol" — high levels are often linked to excess sugar and refined carbs in the diet. It\'s usually calculated rather than measured directly, and often improves significantly with dietary changes.',
+            'UA Leukocyte Esterase': 'This test detects an enzyme released by white blood cells in your urine. Think of it as a flag — if white blood cells are present in urine, your body may be responding to irritation or infection in the urinary tract. It\'s one of the first clues doctors look for when checking for a UTI.',
+            'UA Nitrite': 'Nitrite in urine is produced by certain bacteria — so its presence is a signal that bacteria may be in your urinary tract. Think of it as a footprint left behind. A positive result alongside leukocyte esterase strongly suggests a urinary tract infection.',
+            'UA Urobilinogen': 'Urobilinogen is a byproduct of bilirubin breakdown that normally appears in small amounts in urine. Think of it as a downstream indicator of liver and red blood cell activity. Too much or too little can both be meaningful and are usually evaluated alongside other liver markers.',
+            'UA Bilirubin': 'Bilirubin shouldn\'t normally appear in urine — when it does, it suggests the liver may not be processing it effectively. Think of it as a backup signal — when the liver\'s filtration system is under stress, bilirubin can spill over into urine. It\'s usually looked at alongside blood bilirubin levels.',
+            'UA Protein': 'A small amount of protein in urine can be normal after exercise or dehydration, but persistent elevation can signal the kidneys aren\'t filtering as efficiently as they should. Think of your kidneys as a fine-mesh strainer — protein is too large to pass through normally, so when it does, it\'s worth noting.',
+            'UA Blood': 'Blood in urine — even in microscopic amounts — is always worth investigating. There are many possible causes ranging from simple things like dehydration or exercise to things that need medical attention. Your doctor will consider it alongside your other results and symptoms.',
+            'UA Ketones': 'Ketones are produced when your body burns fat for fuel instead of carbohydrates. They\'re common in people following low-carb diets, fasting, or exercising intensely. In moderate amounts this is often harmless, but high levels — especially alongside high blood sugar — can signal a more serious issue.',
+            'UA Glucose': 'Glucose shouldn\'t normally appear in urine — your kidneys are designed to keep it in the bloodstream. When blood sugar gets high enough, the kidneys can\'t hold it all back and it spills into urine. Think of it as your kidneys\' overflow valve. This result is often looked at alongside a blood glucose test.',
+            'UA Specific Gravity': 'Specific gravity measures how concentrated your urine is — essentially how much "stuff" is dissolved in it compared to plain water. Think of it like checking how dark a cup of tea is. A very high reading means your urine is very concentrated, usually from dehydration. A very low reading means it\'s very dilute.',
+            'UA pH': 'Urine pH measures how acidic or alkaline your urine is on a scale of 4.5 to 8.5. Diet plays a big role — meat-heavy diets tend to make urine more acidic, while plant-based diets make it more alkaline. Extreme values can sometimes be associated with kidney stones or infections.',
+            'UA Clarity': 'Clarity describes how clear or cloudy your urine appears. Normal urine is clear to slightly hazy. Cloudiness can result from something as simple as dehydration or a high-protein meal, but it can also indicate white blood cells, bacteria, or crystals — which is why it\'s evaluated alongside other urinalysis results.',
+            'UA Color': 'Urine color is a quick indicator of hydration and overall health. Pale straw to yellow is normal and means you\'re well hydrated. Dark yellow or amber signals dehydration. Unusual colors like orange, pink, or brown can be caused by foods, medications, or occasionally warrant further investigation.',
             'eGFR if African American': 'eGFR estimates how well your kidneys are filtering your blood each minute — like a flow rate reading on your kidney\'s filtration system. Some labs report a separate value adjusted for African American patients based on historical calculation differences. Higher numbers are better and it\'s one of the most important markers of long-term kidney health.',
             'Albumin/Globulin Ratio': 'The albumin/globulin ratio compares two key proteins in your blood. Think of it as a balance check — albumin handles transport and nutrition, while globulins support your immune system. When the ratio is off, it helps your doctor understand which protein type may need attention.',
-            'A/G Ratio': 'The A/G ratio compares albumin to globulin — two important proteins in your blood. Albumin handles nutrient transport while globulins support immunity. The ratio helps give context to each individual protein level.',
             'Non-HDL Cholesterol': 'Non-HDL cholesterol captures all the cholesterol types that can contribute to buildup in your arteries — everything except the "good" HDL. It\'s considered a more complete picture of cardiovascular risk than LDL alone.',
-            'VLDL': 'VLDL carries triglycerides through your bloodstream. It\'s sometimes called the "other bad cholesterol" — high levels are often linked to excess sugar and refined carbs in the diet. It\'s usually calculated rather than measured directly.',
             'Estimated Average Glucose': 'Estimated average glucose gives a picture of your typical blood sugar level over the past 2-3 months — like a report card for how your body has been managing sugar. It\'s derived from your HbA1c and helps spot trends that a single glucose reading might miss.',
             'HbA1c': 'HbA1c measures the percentage of red blood cells coated in sugar — giving a 3-month average of your blood sugar levels. Think of it as a long-term snapshot rather than a moment-in-time reading. It\'s one of the most important markers for monitoring blood sugar health.',
             'Uric Acid': 'Uric acid is a waste product formed when your body breaks down purines, found in certain foods. When levels run high, crystals can form in joints causing discomfort. Staying well hydrated and moderating red meat and alcohol intake can help keep levels in check.'
@@ -1717,3 +1961,4 @@ Your data is private and automatically deleted when you close this tab.`;
     </script>
 </body>
 </html>
+
