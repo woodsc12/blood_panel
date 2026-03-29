@@ -286,7 +286,6 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 14px;
-            width: 100%;
             margin-bottom: 10px;
             transition: all 0.2s;
         }
@@ -315,12 +314,13 @@
         }
 
         .btn-olive {
-            background: #2D7D32;
-            color: white;
+            background: white;
+            color: #2d7d32;
+            border: 1.5px solid #2d7d32;
         }
 
         .btn-olive:hover {
-            background: #556030;
+            background: #f2f7f3;
         }
 
         .bio-description {
@@ -575,13 +575,14 @@
             <div class="hero-inner">
                 <div class="hero-badge">Blood Panel Analysis</div>
                 <h1>Your Blood Work, Decoded</h1>
-                <p>Understanding your labs. Supporting your health. No chatbot sees your results. Ever.</p>
+                <p>Understanding your labs. Supporting your health. No chatbot sees this. Ever.</p>
             </div>
         </header>
 
         <!-- STEP 1: UPLOAD -->
         <div id="step-upload" class="card">
             <h2>Upload Your Blood Panel</h2>
+            <p class="small-text">Your lab results, explained in plain English.</p>
             
             <div class="upload-zone" id="uploadZone">
                 <span class="upload-icon">🌿</span>
@@ -596,7 +597,7 @@
             
             <input id="fileInput" type="file" accept="application/pdf,image/*" />
             
-            <p class="small-text">Your data is 100% private--your PDF is read directly on your device and never transmitted anywhere.</p>
+            <p class="small-text">Your data is private and automatically deleted when you close this tab.</p>
             
             <div id="uploadStatus"></div>
         </div>
@@ -630,8 +631,10 @@
 
             <p class="small-text">Can't find a biomarker? We'll skip it. Want to add more? You can select from the next screen.</p>
             
-            <button class="btn-primary" id="proceedToSelect">Continue to Selection</button>
-            <button class="btn-olive" id="backFromReview">← Back</button>
+            <button class="btn-primary" id="proceedToSelect" style="width:100%; display:block;">Continue to Selection</button>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-olive" id="backFromReview" style="flex:1;">← Back</button>
+            </div>
             
             <div id="reviewStatus"></div>
         </div>
@@ -646,9 +649,11 @@
             
             <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
             
-            <button class="btn-primary" id="getRecommendations">Get Recommendations</button>
-            <button class="btn-olive" id="backFromSelect">← Back</button>
-            <button class="btn-olive" id="tryAgain">🏠 Home</button>
+            <button class="btn-primary" id="getRecommendations" style="width:100%; display:block;">Get Recommendations</button>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-olive" id="backFromSelect" style="flex:1;">← Back</button>
+                <button class="btn-olive" id="tryAgain" style="flex:1;">🏠 Home</button>
+            </div>
             
             <div id="selectStatus"></div>
         </div>
@@ -660,9 +665,11 @@
             <div id="recommendationsContainer"></div>
             
             <div class="actions">
-                <button class="btn-primary" id="exportReport">📥 Export Report</button>
-                <button class="btn-olive" id="backFromRecommend">← Back</button>
-                <button class="btn-olive" id="startOver">🏠 Home</button>
+                <button class="btn-primary" id="exportReport" style="width:100%; display:block;">📥 Export Report</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-olive" id="backFromRecommend" style="flex:1;">← Back</button>
+                    <button class="btn-olive" id="startOver" style="flex:1;">🏠 Home</button>
+                </div>
             </div>
         </div>
 
