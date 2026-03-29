@@ -126,13 +126,13 @@
         }
         
         .disclaimer {
-            background: #FBC02D;
-            color: #333;
+            background: #E8F5E9;
+            color: #1b5e20;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 13px;
-            border-left: 4px solid #F57C00;
+            border-left: 4px solid #2D7D32;
         }
         
         .upload-zone {
@@ -584,6 +584,7 @@
         <!-- STEP 1: UPLOAD -->
         <div id="step-upload" class="card">
             <h2>Upload Your Blood Panel</h2>
+            <p class="small-text">Your lab results, explained in plain English.</p>
             
             <div class="upload-zone" id="uploadZone">
                 <span class="upload-icon">🌿</span>
@@ -1434,8 +1435,36 @@
             'Folate': 'Folate is a B vitamin that supports cell growth and the production of healthy red blood cells. It\'s particularly important during pregnancy, but everyone needs it. Dark leafy greens, beans, and fortified foods are excellent sources.',
             'TSH': 'TSH is a signal your brain sends to your thyroid — think of it like a thermostat dial. When TSH is high, your brain is working harder to wake up a sluggish thyroid. Your thyroid controls energy, metabolism, and mood, so this one is worth following closely.',
             'Free T4': 'Free T4 is the active thyroid hormone that circulates in your blood. It helps regulate your metabolism, energy levels, and body temperature. It\'s typically looked at alongside TSH to get a complete picture of thyroid function.',
-            'Blood Pressure': 'Blood pressure measures the force of blood pushing against your artery walls as your heart pumps. Think of it like water pressure in a garden hose — too high for too long puts strain on the whole system. Diet, exercise, and stress management all play a meaningful role.'
+            'Blood Pressure': 'Blood pressure measures the force of blood pushing against your artery walls as your heart pumps. Think of it like water pressure in a garden hose — too high for too long puts strain on the whole system. Diet, exercise, and stress management all play a meaningful role.',
+            'eGFR if African American': 'eGFR estimates how well your kidneys are filtering your blood each minute — like a flow rate reading on your kidney\'s filtration system. Some labs report a separate value adjusted for African American patients based on historical calculation differences. Higher numbers are better and it\'s one of the most important markers of long-term kidney health.',
+            'Albumin/Globulin Ratio': 'The albumin/globulin ratio compares two key proteins in your blood. Think of it as a balance check — albumin handles transport and nutrition, while globulins support your immune system. When the ratio is off, it helps your doctor understand which protein type may need attention.',
+            'A/G Ratio': 'The A/G ratio compares albumin to globulin — two important proteins in your blood. Albumin handles nutrient transport while globulins support immunity. The ratio helps give context to each individual protein level.',
+            'Non-HDL Cholesterol': 'Non-HDL cholesterol captures all the cholesterol types that can contribute to buildup in your arteries — everything except the "good" HDL. It\'s considered a more complete picture of cardiovascular risk than LDL alone.',
+            'VLDL': 'VLDL carries triglycerides through your bloodstream. It\'s sometimes called the "other bad cholesterol" — high levels are often linked to excess sugar and refined carbs in the diet. It\'s usually calculated rather than measured directly.',
+            'Estimated Average Glucose': 'Estimated average glucose gives a picture of your typical blood sugar level over the past 2-3 months — like a report card for how your body has been managing sugar. It\'s derived from your HbA1c and helps spot trends that a single glucose reading might miss.',
+            'HbA1c': 'HbA1c measures the percentage of red blood cells coated in sugar — giving a 3-month average of your blood sugar levels. Think of it as a long-term snapshot rather than a moment-in-time reading. It\'s one of the most important markers for monitoring blood sugar health.',
+            'Uric Acid': 'Uric acid is a waste product formed when your body breaks down purines, found in certain foods. When levels run high, crystals can form in joints causing discomfort. Staying well hydrated and moderating red meat and alcohol intake can help keep levels in check.'
         };
+
+        // Fuzzy description lookup — handles OCR variants like "eGFR if African American"
+        function getBiomarkerDescription(bioName) {
+            // Exact match first
+            if (biomarkerDescriptions[bioName]) return biomarkerDescriptions[bioName];
+            // Case-insensitive exact match
+            const lowerName = bioName.toLowerCase().trim();
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (key.toLowerCase() === lowerName) return biomarkerDescriptions[key];
+            }
+            // Fuzzy: check if the biomarker name contains a known key (e.g. "eGFR if African American" contains "eGFR")
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (lowerName.includes(key.toLowerCase())) return biomarkerDescriptions[key];
+            }
+            // Fuzzy: check if a known key contains the biomarker name
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (key.toLowerCase().includes(lowerName)) return biomarkerDescriptions[key];
+            }
+            return '';
+        }
 
         function getRecommendations() {
             state.recommendations = {};
@@ -1476,7 +1505,7 @@
                         const status = recData.status;
                         const foods = recData.foods;
                         const statusIcon = status === 'High' ? '🔴' : '🔵';
-                        const description = biomarkerDescriptions[bioName] || '';
+                        const description = getBiomarkerDescription(bioName);
                         
                         let biomarkerSection = `
                             <div style="background: #E6F1FB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #378ADD;">
@@ -1512,7 +1541,7 @@
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const foods = recData.foods;
-                        const description = biomarkerDescriptions[bioName] || '';
+                        const description = getBiomarkerDescription(bioName);
                         
                         let biomarkerSection = `
                             <div style="background: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
