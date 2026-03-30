@@ -683,6 +683,27 @@
             </div>
         </div>
 
+        <!-- FEEDBACK MODAL -->
+        <div id="feedbackModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" id="closeFeedback">✕</button>
+                <h3 style="margin-bottom: 8px; color: #2C2C2C;">Share your feedback</h3>
+                <p style="font-size: 13px; color: #666; margin: 0 0 16px 0;">Help us make Blood Panel Analysis better. Your feedback is private and never shared.</p>
+                
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 500; color: #666; display: block; margin-bottom: 4px;">What's on your mind?</label>
+                    <textarea id="feedbackText" placeholder="Loved the design... wish there were more biomarkers... found a bug..." style="width: 100%; min-height: 80px; padding: 8px 12px; border: 0.5px solid #ddd; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; resize: vertical; font-size: 14px; line-height: 1.5;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-primary" id="submitFeedback" style="flex: 1; padding: 10px 16px; margin-bottom: 0;">Send</button>
+                    <button id="cancelFeedback" style="flex: 1; padding: 10px 16px; margin-bottom: 0; border: 0.5px solid #ddd; border-radius: 8px; background: transparent; color: #2C2C2C; font-weight: 500; font-size: 13px; cursor: pointer;">Cancel</button>
+                </div>
+                
+                <div id="feedbackStatus" style="margin-top: 12px; font-size: 12px; text-align: center;"></div>
+            </div>
+        </div>
+
         <!-- PRIVACY SECTION -->
         <div class="privacy-section">
             <div class="privacy-section-title">Your privacy, our priority</div>
@@ -719,7 +740,8 @@
 
         <!-- FOOTER -->
         <footer>
-            <p>Not a medical device. Consult your healthcare provider.</p>
+            <p style="margin-bottom: 8px;">Not a medical device. Consult your healthcare provider.</p>
+            <p style="margin: 0;"><a href="#" id="feedbackLink" style="color: #2D7D32; text-decoration: none; cursor: pointer; font-weight: 500;">Provide feedback</a></p>
         </footer>
     </div>
 
@@ -1372,8 +1394,8 @@
                             const rawName = line.split(/\d/)[0].trim();
                             // Only use OCR name if it's short enough to be a real biomarker name
                             // and doesn't contain junk phrases — otherwise fall back to pattern name
-                            const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result/i;
-                            const biomarkerName = (rawName && rawName.length <= 60 && !junkPhrases.test(rawName))
+                            const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result|lean more|about this|test result|lab result|finding|result\s*\[|\[.*\]|leaning/i;
+                            const biomarkerName = (rawName && rawName.length <= 50 && !junkPhrases.test(rawName) && rawName.length > 2)
                                 ? rawName
                                 : pattern.name;
                             
@@ -1750,77 +1772,91 @@
             });
             
             if (abnormalSelected.length > 0) {
-                html += '<h3 style="margin-bottom: 20px; color: #d32f2f;">⚠️ Out of Range Results</h3>';
+                html += '<div><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Out of range</h3>';
                 
                 abnormalSelected.forEach(bioName => {
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const status = recData.status;
                         const foods = recData.foods;
-                        const statusIcon = status === 'High' ? '🔴' : '🔵';
+                        const statusClass = status === 'High' ? 'style="background: #FCEBEB; color: #791F1F;"' : 'style="background: #E3F2FD; color: #1565c0;"';
                         const description = getBiomarkerDescription(bioName);
+                        const foodCount = foods ? foods.length : 0;
                         
-                        let biomarkerSection = `
-                            <div style="background: #E6F1FB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #378ADD;">
-                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">${statusIcon} ${bioName.toUpperCase()} (${status})</h4>
-                                ${description ? `
-                                <div class="bio-description">
-                                    <div class="bio-description-label">What is this?</div>
-                                    ${description}
-                                </div>` : ''}
-                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">These foods can help support your ${bioName.toLowerCase()}:</p>
+                        html += `
+                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
+                                    <span ${statusClass} style="font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">${status}</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Supporting your health with nutrition.'}</p>
+                                <details style="margin: 0;">
+                                    <summary style="font-size: 12px; font-weight: 500; color: #378ADD; cursor: pointer; user-select: none;">Show ${foodCount} foods that help</summary>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
                         `;
                         
-                        foods.forEach(food => {
-                            biomarkerSection += `
-                                <div class="food-card">
-                                    <h4>${food.name}</h4>
-                                    <p class="small-text">${food.why}</p>
-                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
+                        foods.forEach((food, idx) => {
+                            html += `
+                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
+                                    <strong style="color: #2C2C2C;">${food.name}</strong>
+                                    <br>${food.why}
+                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
                                 </div>
                             `;
                         });
                         
-                        biomarkerSection += `</div>`;
-                        html += biomarkerSection;
+                        html += `
+                                    </div>
+                                </details>
+                            </div>
+                        `;
                     }
                 });
+                
+                html += '</div>';
             }
             
             if (normalSelected.length > 0) {
-                html += '<h3 style="margin-bottom: 20px; color: #2D7D32; margin-top: 30px;">✅ Normal Results</h3>';
+                html += '<div style="margin-top: 24px;"><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Normal results</h3>';
                 
                 normalSelected.forEach(bioName => {
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const foods = recData.foods;
                         const description = getBiomarkerDescription(bioName);
+                        const foodCount = foods ? foods.length : 0;
                         
-                        let biomarkerSection = `
-                            <div style="background: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
-                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">🟢 ${bioName.toUpperCase()} (Normal)</h4>
-                                ${description ? `
-                                <div class="bio-description">
-                                    <div class="bio-description-label">What is this?</div>
-                                    ${description}
-                                </div>` : ''}
-                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Your ${bioName.toLowerCase()} is within normal range. These foods help maintain it:</p>
+                        html += `
+                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
+                                    <span style="background: #E8F5E9; color: #2D7D32; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">Normal</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Your results are within normal range.'}</p>
+                                <details style="margin: 0;">
+                                    <summary style="font-size: 12px; font-weight: 500; color: #2D7D32; cursor: pointer; user-select: none;">Show ${foodCount} foods to maintain</summary>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
                         `;
                         
-                        foods.forEach(food => {
-                            biomarkerSection += `
-                                <div class="food-card">
-                                    <h4>${food.name}</h4>
-                                    <p class="small-text">${food.why}</p>
-                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
+                        foods.forEach((food, idx) => {
+                            html += `
+                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
+                                    <strong style="color: #2C2C2C;">${food.name}</strong>
+                                    <br>${food.why}
+                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
                                 </div>
                             `;
                         });
                         
-                        biomarkerSection += `</div>`;
-                        html += biomarkerSection;
+                        html += `
+                                    </div>
+                                </details>
+                            </div>
+                        `;
                     }
                 });
+                
+                html += '</div>';
             }
             
             document.getElementById('recommendationsContainer').innerHTML = html;
@@ -1957,8 +1993,92 @@ Your data is private and automatically deleted when you close this tab.`;
         document.getElementById('closeModal').addEventListener('click', closeScience);
         document.getElementById('scienceOK').addEventListener('click', closeScience);
 
+        // Feedback modal handlers
+        function openFeedback() {
+            document.getElementById('feedbackModal').classList.add('open');
+            document.getElementById('feedbackText').focus();
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.remove('open');
+            document.getElementById('feedbackText').value = '';
+            document.getElementById('feedbackStatus').innerHTML = '';
+        }
+
+        async function submitFeedback() {
+            const feedbackText = document.getElementById('feedbackText').value.trim();
+            const statusEl = document.getElementById('feedbackStatus');
+            
+            if (!feedbackText) {
+                statusEl.innerHTML = '<span style="color: #d32f2f;">Please share your feedback before sending.</span>';
+                return;
+            }
+            
+            // Prepare feedback data
+            const feedback = {
+                message: feedbackText,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+            
+            // Try to send to Vercel API (optional - can work without backend)
+            try {
+                statusEl.innerHTML = '<span style="color: #666;">Sending...</span>';
+                
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedback)
+                });
+                
+                if (response.ok) {
+                    statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
+                    setTimeout(() => closeFeedback(), 2000);
+                } else {
+                    // Fallback: store locally if API fails
+                    storeFeedbackLocally(feedback);
+                    statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
+                    setTimeout(() => closeFeedback(), 2000);
+                }
+            } catch (err) {
+                // Graceful fallback
+                storeFeedbackLocally(feedback);
+                statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
+                setTimeout(() => closeFeedback(), 2000);
+            }
+        }
+
+        function storeFeedbackLocally(feedback) {
+            // Store in localStorage as fallback
+            try {
+                let feedbackList = JSON.parse(localStorage.getItem('bloodPanelFeedback') || '[]');
+                feedbackList.push(feedback);
+                localStorage.setItem('bloodPanelFeedback', JSON.stringify(feedbackList));
+            } catch (err) {
+                console.log('Could not store feedback locally');
+            }
+        }
+
+        document.getElementById('feedbackLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            openFeedback();
+        });
+        
+        document.getElementById('closeFeedback').addEventListener('click', closeFeedback);
+        document.getElementById('cancelFeedback').addEventListener('click', closeFeedback);
+        document.getElementById('submitFeedback').addEventListener('click', submitFeedback);
+        
+        // Allow Enter key to submit
+        document.getElementById('feedbackText').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                submitFeedback();
+            }
+        });
+
         showStep('upload');
     </script>
 </body>
 </html>
+
 
