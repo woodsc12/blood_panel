@@ -219,42 +219,165 @@
         }
         
         .abnormal-section {
-            background: #E6F1FB;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #378ADD;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 2rem;
+            border-left: none;
         }
 
         .normal-section {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .checkbox-group {
-            margin-bottom: 12px;
-            padding: 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 2rem;
         }
 
-        .checkbox-group:hover {
-            background: rgba(0,0,0,0.02);
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
         }
-        
-        .checkbox-group input {
-            margin-right: 8px;
-            cursor: pointer;
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
-        .checkbox-group label {
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2C2C2C;
+            margin: 0;
+        }
+
+        .count-badge {
+            display: inline-block;
+            background: #f5f5f5;
+            color: #999;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .select-all-btn {
+            background: transparent;
+            border: 0.5px solid #ccc;
+            color: #2C2C2C;
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .select-all-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .pills-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border: 0.5px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .biomarker-pill {
+            display: inline-block;
+            background: white;
+            border: 0.5px solid #ddd;
+            border-radius: 24px;
+            padding: 10px 16px;
+            margin: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .biomarker-pill:hover {
+            border-color: #999;
+            transform: scale(1.05);
+            box-shadow: 0 0 0 1px #999;
+        }
+
+        .biomarker-pill.selected {
+            background: #E8F5E9;
+            border-color: #4CAF50;
+        }
+
+        .biomarker-pill.selected::before {
+            content: '✓';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #2D7D32;
             font-size: 14px;
+        }
+
+        .pill-content {
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .biomarker-pill.selected .pill-content {
+            margin-left: 12px;
+        }
+
+        .pill-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2C2C2C;
+        }
+
+        .biomarker-pill.selected .pill-name {
+            color: #2D7D32;
+        }
+
+        .pill-status {
+            font-size: 12px;
+            color: #999;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .pill-status.status-high {
+            background: #FFEBEE;
+            color: #c62828;
+        }
+
+        .pill-status.status-low {
+            background: #E3F2FD;
+            color: #1565c0;
+        }
+
+        .pill-status.status-normal {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        .abnormal-section .section-header {
+            padding-bottom: 1rem;
+            border-bottom: 0.5px solid #ddd;
+        }
+
+        .normal-section .section-header {
+            padding-bottom: 1rem;
+            border-bottom: 0.5px solid #ddd;
         }
 
         .status-indicator {
@@ -643,11 +766,14 @@
         <div id="step-select" class="card hidden">
             <h2>Which biomarkers would you like recommendations for?</h2>
             
-            <div class="abnormal-section" id="abnormalSection"></div>
+            <div id="abnormalSection"></div>
             
-            <div id="normalSection" class="normal-section hidden"></div>
+            <div id="normalSection" class="hidden"></div>
             
-            <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
+            <div class="counter" style="text-align: center; padding: 1.5rem; background: #f5f5f5; border-radius: 12px; border: 0.5px solid #ddd; margin: 2rem 0 1.5rem;">
+                <p class="small-text" style="margin: 0 0 6px;">Biomarkers selected</p>
+                <p style="font-size: 32px; font-weight: bold; color: #2C2C2C; margin: 0;"><span id="selectedCount">0</span></p>
+            </div>
             
             <button class="btn-primary" id="getRecommendations" style="width:100%; display:block;">Get Recommendations</button>
             <div style="display:flex; gap:8px;">
@@ -680,27 +806,6 @@
                 <h3 id="scienceTitle"></h3>
                 <p id="scienceText"></p>
                 <button class="btn-primary" id="scienceOK">Got it</button>
-            </div>
-        </div>
-
-        <!-- FEEDBACK MODAL -->
-        <div id="feedbackModal" class="modal">
-            <div class="modal-content">
-                <button class="close-btn" id="closeFeedback">✕</button>
-                <h3 style="margin-bottom: 8px; color: #2C2C2C;">Share your feedback</h3>
-                <p style="font-size: 13px; color: #666; margin: 0 0 16px 0;">Help us make Blood Panel Analysis better. Your feedback is private and never shared.</p>
-                
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 12px; font-weight: 500; color: #666; display: block; margin-bottom: 4px;">What's on your mind?</label>
-                    <textarea id="feedbackText" placeholder="Loved the design... wish there were more biomarkers... found a bug..." style="width: 100%; min-height: 80px; padding: 8px 12px; border: 0.5px solid #ddd; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; resize: vertical; font-size: 14px; line-height: 1.5;"></textarea>
-                </div>
-                
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn-primary" id="submitFeedback" style="flex: 1; padding: 10px 16px; margin-bottom: 0;">Send</button>
-                    <button id="cancelFeedback" style="flex: 1; padding: 10px 16px; margin-bottom: 0; border: 0.5px solid #ddd; border-radius: 8px; background: transparent; color: #2C2C2C; font-weight: 500; font-size: 13px; cursor: pointer;">Cancel</button>
-                </div>
-                
-                <div id="feedbackStatus" style="margin-top: 12px; font-size: 12px; text-align: center;"></div>
             </div>
         </div>
 
@@ -740,8 +845,7 @@
 
         <!-- FOOTER -->
         <footer>
-            <p style="margin-bottom: 8px;">Not a medical device. Consult your healthcare provider.</p>
-            <p style="margin: 0;"><a href="#" id="feedbackLink" style="color: #2D7D32; text-decoration: none; cursor: pointer; font-weight: 500;">Provide feedback</a></p>
+            <p>Not a medical device. Consult your healthcare provider.</p>
         </footer>
     </div>
 
@@ -1394,8 +1498,8 @@
                             const rawName = line.split(/\d/)[0].trim();
                             // Only use OCR name if it's short enough to be a real biomarker name
                             // and doesn't contain junk phrases — otherwise fall back to pattern name
-                            const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result|lean more|about this|test result|lab result|finding|result\s*\[|\[.*\]|leaning/i;
-                            const biomarkerName = (rawName && rawName.length <= 50 && !junkPhrases.test(rawName) && rawName.length > 2)
+                            const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result/i;
+                            const biomarkerName = (rawName && rawName.length <= 60 && !junkPhrases.test(rawName))
                                 ? rawName
                                 : pattern.name;
                             
@@ -1574,64 +1678,118 @@
             const normal = state.biomarkers.filter(b => b.status === 'Normal');
             
             // Abnormal section
-            let abnormalHTML = '<h3>Out of range (' + abnormal.length + ')</h3>';
+            let abnormalHTML = `
+                <div class="section-header">
+                    <div class="header-left">
+                        <h3 class="section-title">Out of range</h3>
+                        <span class="count-badge">${abnormal.length}</span>
+                    </div>
+                    <button class="select-all-btn" id="selectAllAbnormal">Select all</button>
+                </div>
+                <div class="pills-container">
+            `;
+            
             abnormal.forEach(bio => {
+                const isSelected = state.selectedBiomarkers.includes(bio.name);
                 const statusClass = bio.status === 'High' ? 'status-high' : 'status-low';
                 abnormalHTML += `
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="bio-${bio.name}" data-name="${bio.name}" 
-                               ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
-                        <label for="bio-${bio.name}">
-                            <strong>${bio.name}</strong>
-                            <span class="status-indicator ${statusClass}">${bio.status}</span>
-                        </label>
+                    <div class="biomarker-pill ${isSelected ? 'selected' : ''}" data-name="${bio.name}">
+                        <div class="pill-content">
+                            <span class="pill-name">${bio.name}</span>
+                            <span class="pill-status ${statusClass}">${bio.status}</span>
+                        </div>
                     </div>
                 `;
             });
             
+            abnormalHTML += `</div>`;
             document.getElementById('abnormalSection').innerHTML = abnormalHTML;
             
-            document.querySelectorAll('#abnormalSection [data-name]').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+            // Add click handlers for abnormal pills
+            document.querySelectorAll('#abnormalSection .biomarker-pill').forEach(pill => {
+                pill.addEventListener('click', function() {
                     const name = this.dataset.name;
-                    if (this.checked && !state.selectedBiomarkers.includes(name)) {
-                        state.selectedBiomarkers.push(name);
-                    } else if (!this.checked) {
+                    this.classList.toggle('selected');
+                    if (this.classList.contains('selected')) {
+                        if (!state.selectedBiomarkers.includes(name)) {
+                            state.selectedBiomarkers.push(name);
+                        }
+                    } else {
                         state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
                     }
                     updateSelectedCount();
                 });
             });
             
+            // Select All button for abnormal
+            document.getElementById('selectAllAbnormal').addEventListener('click', function() {
+                abnormal.forEach(bio => {
+                    if (!state.selectedBiomarkers.includes(bio.name)) {
+                        state.selectedBiomarkers.push(bio.name);
+                    }
+                });
+                document.querySelectorAll('#abnormalSection .biomarker-pill').forEach(pill => {
+                    pill.classList.add('selected');
+                });
+                updateSelectedCount();
+            });
+            
             // Normal section
             if (normal.length > 0) {
-                let normalHTML = '<h3>Normal (' + normal.length + ')</h3>';
+                let normalHTML = `
+                    <div class="section-header" style="margin-top: 2rem;">
+                        <div class="header-left">
+                            <h3 class="section-title">Normal</h3>
+                            <span class="count-badge">${normal.length}</span>
+                        </div>
+                        <button class="select-all-btn" id="selectAllNormal">Select all</button>
+                    </div>
+                    <div class="pills-container">
+                `;
+                
                 normal.forEach(bio => {
+                    const isSelected = state.selectedBiomarkers.includes(bio.name);
                     normalHTML += `
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="normal-${bio.name}" data-name="${bio.name}" 
-                                   ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
-                            <label for="normal-${bio.name}">
-                                ${bio.name}
-                                <span class="status-indicator status-normal">Normal</span>
-                            </label>
+                        <div class="biomarker-pill ${isSelected ? 'selected' : ''}" data-name="${bio.name}">
+                            <div class="pill-content">
+                                <span class="pill-name">${bio.name}</span>
+                                <span class="pill-status status-normal">Normal</span>
+                            </div>
                         </div>
                     `;
                 });
                 
+                normalHTML += `</div>`;
                 document.getElementById('normalSection').innerHTML = normalHTML;
                 document.getElementById('normalSection').classList.remove('hidden');
                 
-                document.querySelectorAll('#normalSection [data-name]').forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
+                // Add click handlers for normal pills
+                document.querySelectorAll('#normalSection .biomarker-pill').forEach(pill => {
+                    pill.addEventListener('click', function() {
                         const name = this.dataset.name;
-                        if (this.checked && !state.selectedBiomarkers.includes(name)) {
-                            state.selectedBiomarkers.push(name);
-                        } else if (!this.checked) {
+                        this.classList.toggle('selected');
+                        if (this.classList.contains('selected')) {
+                            if (!state.selectedBiomarkers.includes(name)) {
+                                state.selectedBiomarkers.push(name);
+                            }
+                        } else {
                             state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
                         }
                         updateSelectedCount();
                     });
+                });
+                
+                // Select All button for normal
+                document.getElementById('selectAllNormal').addEventListener('click', function() {
+                    normal.forEach(bio => {
+                        if (!state.selectedBiomarkers.includes(bio.name)) {
+                            state.selectedBiomarkers.push(bio.name);
+                        }
+                    });
+                    document.querySelectorAll('#normalSection .biomarker-pill').forEach(pill => {
+                        pill.classList.add('selected');
+                    });
+                    updateSelectedCount();
                 });
             } else {
                 document.getElementById('normalSection').classList.add('hidden');
@@ -1772,91 +1930,77 @@
             });
             
             if (abnormalSelected.length > 0) {
-                html += '<div><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Out of range</h3>';
+                html += '<h3 style="margin-bottom: 20px; color: #d32f2f;">⚠️ Out of Range Results</h3>';
                 
                 abnormalSelected.forEach(bioName => {
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const status = recData.status;
                         const foods = recData.foods;
-                        const statusClass = status === 'High' ? 'style="background: #FCEBEB; color: #791F1F;"' : 'style="background: #E3F2FD; color: #1565c0;"';
+                        const statusIcon = status === 'High' ? '🔴' : '🔵';
                         const description = getBiomarkerDescription(bioName);
-                        const foodCount = foods ? foods.length : 0;
                         
-                        html += `
-                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
-                                    <span ${statusClass} style="font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">${status}</span>
-                                </div>
-                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Supporting your health with nutrition.'}</p>
-                                <details style="margin: 0;">
-                                    <summary style="font-size: 12px; font-weight: 500; color: #378ADD; cursor: pointer; user-select: none;">Healthy recommendations</summary>
-                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
+                        let biomarkerSection = `
+                            <div style="background: #E6F1FB; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #378ADD;">
+                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">${statusIcon} ${bioName.toUpperCase()} (${status})</h4>
+                                ${description ? `
+                                <div class="bio-description">
+                                    <div class="bio-description-label">What is this?</div>
+                                    ${description}
+                                </div>` : ''}
+                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">These foods can help support your ${bioName.toLowerCase()}:</p>
                         `;
                         
-                        foods.forEach((food, idx) => {
-                            html += `
-                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
-                                    <strong style="color: #2C2C2C;">${food.name}</strong>
-                                    <br>${food.why}
-                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
+                        foods.forEach(food => {
+                            biomarkerSection += `
+                                <div class="food-card">
+                                    <h4>${food.name}</h4>
+                                    <p class="small-text">${food.why}</p>
+                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
                                 </div>
                             `;
                         });
                         
-                        html += `
-                                    </div>
-                                </details>
-                            </div>
-                        `;
+                        biomarkerSection += `</div>`;
+                        html += biomarkerSection;
                     }
                 });
-                
-                html += '</div>';
             }
             
             if (normalSelected.length > 0) {
-                html += '<div style="margin-top: 24px;"><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Normal results</h3>';
+                html += '<h3 style="margin-bottom: 20px; color: #2D7D32; margin-top: 30px;">✅ Normal Results</h3>';
                 
                 normalSelected.forEach(bioName => {
                     const recData = state.recommendations[bioName];
                     if (recData) {
                         const foods = recData.foods;
                         const description = getBiomarkerDescription(bioName);
-                        const foodCount = foods ? foods.length : 0;
                         
-                        html += `
-                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
-                                    <span style="background: #E8F5E9; color: #2D7D32; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">Normal</span>
-                                </div>
-                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Your results are within normal range.'}</p>
-                                <details style="margin: 0;">
-                                    <summary style="font-size: 12px; font-weight: 500; color: #2D7D32; cursor: pointer; user-select: none;">Show ${foodCount} foods to maintain</summary>
-                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
+                        let biomarkerSection = `
+                            <div style="background: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
+                                <h4 style="margin-bottom: 10px; color: #2C2C2C;">🟢 ${bioName.toUpperCase()} (Normal)</h4>
+                                ${description ? `
+                                <div class="bio-description">
+                                    <div class="bio-description-label">What is this?</div>
+                                    ${description}
+                                </div>` : ''}
+                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Your ${bioName.toLowerCase()} is within normal range. These foods help maintain it:</p>
                         `;
                         
-                        foods.forEach((food, idx) => {
-                            html += `
-                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
-                                    <strong style="color: #2C2C2C;">${food.name}</strong>
-                                    <br>${food.why}
-                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
+                        foods.forEach(food => {
+                            biomarkerSection += `
+                                <div class="food-card">
+                                    <h4>${food.name}</h4>
+                                    <p class="small-text">${food.why}</p>
+                                    <button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')">Why this works</button>
                                 </div>
                             `;
                         });
                         
-                        html += `
-                                    </div>
-                                </details>
-                            </div>
-                        `;
+                        biomarkerSection += `</div>`;
+                        html += biomarkerSection;
                     }
                 });
-                
-                html += '</div>';
             }
             
             document.getElementById('recommendationsContainer').innerHTML = html;
@@ -1873,80 +2017,87 @@
         }
 
         function exportReport() {
-            let reportContent = `BLOOD PANEL ANALYSIS REPORT
+            try {
+                let reportContent = `BLOOD PANEL ANALYSIS REPORT
 Date: ${new Date().toLocaleDateString()}
 
 BIOMARKERS ANALYZED:
 `;
 
-            const abnormalSelected = state.selectedBiomarkers.filter(name => {
-                const bio = state.biomarkers.find(b => b.name === name);
-                return bio && bio.status !== 'Normal';
-            });
-
-            if (abnormalSelected.length > 0) {
-                reportContent += `\n⚠️ OUT OF RANGE:\n`;
-                abnormalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    reportContent += `  - ${name} (${rec.status})\n`;
+                const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                    const bio = state.biomarkers.find(b => b.name === name);
+                    return bio && bio.status !== 'Normal';
                 });
-            }
 
-            const normalSelected = state.selectedBiomarkers.filter(name => {
-                const bio = state.biomarkers.find(b => b.name === name);
-                return bio && bio.status === 'Normal';
-            });
+                if (abnormalSelected.length > 0) {
+                    reportContent += `\n⚠️ OUT OF RANGE:\n`;
+                    abnormalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        reportContent += `  - ${name} (${rec.status})\n`;
+                    });
+                }
 
-            if (normalSelected.length > 0) {
-                reportContent += `\n✅ NORMAL:\n`;
-                normalSelected.forEach(name => {
-                    reportContent += `  - ${name} (Normal)\n`;
+                const normalSelected = state.selectedBiomarkers.filter(name => {
+                    const bio = state.biomarkers.find(b => b.name === name);
+                    return bio && bio.status === 'Normal';
                 });
-            }
 
-            reportContent += `\n\nRECOMMENDATIONS:\n`;
-            
-            if (abnormalSelected.length > 0) {
-                reportContent += `\nOUT OF RANGE FOODS:\n`;
-                abnormalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    if (rec && rec.foods) {
-                        reportContent += `\n${name} (${rec.status}):\n`;
-                        rec.foods.forEach(food => {
-                            reportContent += `  - ${food.name}: ${food.why}\n`;
-                        });
-                    }
-                });
-            }
+                if (normalSelected.length > 0) {
+                    reportContent += `\n✅ NORMAL:\n`;
+                    normalSelected.forEach(name => {
+                        reportContent += `  - ${name} (Normal)\n`;
+                    });
+                }
 
-            if (normalSelected.length > 0) {
-                reportContent += `\nMAINTENANCE FOODS:\n`;
-                normalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    if (rec && rec.foods) {
-                        reportContent += `\n${name} (Normal):\n`;
-                        rec.foods.forEach(food => {
-                            reportContent += `  - ${food.name}: ${food.why}\n`;
-                        });
-                    }
-                });
-            }
+                reportContent += `\n\nRECOMMENDATIONS:\n`;
+                
+                if (abnormalSelected.length > 0) {
+                    reportContent += `\nOUT OF RANGE FOODS:\n`;
+                    abnormalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        if (rec && rec.foods) {
+                            reportContent += `\n${name} (${rec.status}):\n`;
+                            rec.foods.forEach(food => {
+                                reportContent += `  - ${food.name}: ${food.why}\n`;
+                            });
+                        }
+                    });
+                }
 
-            reportContent += `\n\n---
+                if (normalSelected.length > 0) {
+                    reportContent += `\nMAINTENANCE FOODS:\n`;
+                    normalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        if (rec && rec.foods) {
+                            reportContent += `\n${name} (Normal):\n`;
+                            rec.foods.forEach(food => {
+                                reportContent += `  - ${food.name}: ${food.why}\n`;
+                            });
+                        }
+                    });
+                }
+
+                reportContent += `\n\n---
 IMPORTANT DISCLAIMER:
 This report is educational only and not medical advice.
 Always consult your healthcare provider before making major dietary changes.
 Your data is private and automatically deleted when you close this tab.`;
-            
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+                
+                const blob = new Blob([reportContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                console.log('Report exported successfully');
+            } catch (err) {
+                console.error('Export error:', err);
+                alert('Failed to export report. Please try again.');
+            }
         }
 
         // ============================================================================
@@ -1981,7 +2132,13 @@ Your data is private and automatically deleted when you close this tab.`;
         document.getElementById('getRecommendations').addEventListener('click', getRecommendations);
         document.getElementById('backFromSelect').addEventListener('click', () => showStep('review'));
         document.getElementById('tryAgain').addEventListener('click', () => showStep('upload'));
-        document.getElementById('exportReport').addEventListener('click', exportReport);
+        const exportBtn = document.getElementById('exportReport');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                exportReport();
+            });
+        }
         document.getElementById('backFromRecommend').addEventListener('click', () => showStep('select'));
         document.getElementById('startOver').addEventListener('click', () => {
             state.biomarkers = [];
@@ -1992,89 +2149,6 @@ Your data is private and automatically deleted when you close this tab.`;
         });
         document.getElementById('closeModal').addEventListener('click', closeScience);
         document.getElementById('scienceOK').addEventListener('click', closeScience);
-
-        // Feedback modal handlers
-        function openFeedback() {
-            document.getElementById('feedbackModal').classList.add('open');
-            document.getElementById('feedbackText').focus();
-        }
-
-        function closeFeedback() {
-            document.getElementById('feedbackModal').classList.remove('open');
-            document.getElementById('feedbackText').value = '';
-            document.getElementById('feedbackStatus').innerHTML = '';
-        }
-
-        async function submitFeedback() {
-            const feedbackText = document.getElementById('feedbackText').value.trim();
-            const statusEl = document.getElementById('feedbackStatus');
-            
-            if (!feedbackText) {
-                statusEl.innerHTML = '<span style="color: #d32f2f;">Please share your feedback before sending.</span>';
-                return;
-            }
-            
-            // Prepare feedback data
-            const feedback = {
-                message: feedbackText,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                url: window.location.href
-            };
-            
-            // Try to send to Vercel API (optional - can work without backend)
-            try {
-                statusEl.innerHTML = '<span style="color: #666;">Sending...</span>';
-                
-                const response = await fetch('/api/feedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(feedback)
-                });
-                
-                if (response.ok) {
-                    statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
-                    setTimeout(() => closeFeedback(), 2000);
-                } else {
-                    // Fallback: store locally if API fails
-                    storeFeedbackLocally(feedback);
-                    statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
-                    setTimeout(() => closeFeedback(), 2000);
-                }
-            } catch (err) {
-                // Graceful fallback
-                storeFeedbackLocally(feedback);
-                statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
-                setTimeout(() => closeFeedback(), 2000);
-            }
-        }
-
-        function storeFeedbackLocally(feedback) {
-            // Store in localStorage as fallback
-            try {
-                let feedbackList = JSON.parse(localStorage.getItem('bloodPanelFeedback') || '[]');
-                feedbackList.push(feedback);
-                localStorage.setItem('bloodPanelFeedback', JSON.stringify(feedbackList));
-            } catch (err) {
-                console.log('Could not store feedback locally');
-            }
-        }
-
-        document.getElementById('feedbackLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            openFeedback();
-        });
-        
-        document.getElementById('closeFeedback').addEventListener('click', closeFeedback);
-        document.getElementById('cancelFeedback').addEventListener('click', closeFeedback);
-        document.getElementById('submitFeedback').addEventListener('click', submitFeedback);
-        
-        // Allow Enter key to submit
-        document.getElementById('feedbackText').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && e.ctrlKey) {
-                submitFeedback();
-            }
-        });
 
         showStep('upload');
     </script>
