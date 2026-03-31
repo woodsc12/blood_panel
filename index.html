@@ -566,6 +566,197 @@
             color: #6a8a72;
             line-height: 1.5;
         }
+
+        /* ============================================================================
+           PILL-BASED SELECTION UI
+           ============================================================================ */
+
+        .pill-section {
+            margin-bottom: 20px;
+        }
+
+        .pill-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .pill-section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2C2C2C;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill-count-badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 9px;
+            border-radius: 10px;
+        }
+
+        .pill-count-badge.abnormal {
+            background: #FFEBEE;
+            color: #c62828;
+        }
+
+        .pill-count-badge.normal {
+            background: #E8F5E9;
+            color: #1b5e20;
+        }
+
+        .pill-select-all {
+            font-size: 12px;
+            font-weight: 500;
+            color: #378ADD;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.15s;
+            margin: 0;
+        }
+
+        .pill-select-all:hover {
+            background: rgba(55,138,221,0.08);
+        }
+
+        .pill-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .bio-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            border: 1.5px solid transparent;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Deselected state */
+        .bio-pill.deselected {
+            background: white;
+            border-color: #ccc;
+            color: #888;
+            opacity: 0.7;
+        }
+
+        .bio-pill.deselected:hover {
+            opacity: 1;
+            border-color: #aaa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* Selected — out of range */
+        .bio-pill.selected-abnormal {
+            background: rgba(55,138,221,0.08);
+            border-color: #378ADD;
+            color: #0d47a1;
+        }
+
+        .bio-pill.selected-abnormal:hover {
+            background: rgba(55,138,221,0.14);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(55,138,221,0.15);
+        }
+
+        /* Selected — normal */
+        .bio-pill.selected-normal {
+            background: rgba(45,125,50,0.08);
+            border-color: #4a9a6a;
+            color: #1b5e20;
+        }
+
+        .bio-pill.selected-normal:hover {
+            background: rgba(45,125,50,0.14);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(45,125,50,0.15);
+        }
+
+        .bio-pill:active {
+            transform: scale(0.96);
+        }
+
+        .pill-status-badge {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 1px 7px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .pill-status-badge.high {
+            background: #FFEBEE;
+            color: #c62828;
+        }
+
+        .pill-status-badge.low {
+            background: #E3F2FD;
+            color: #1565c0;
+        }
+
+        .pill-status-badge.normal {
+            background: #E8F5E9;
+            color: #2D7D32;
+        }
+
+        .selected-counter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f2f7f3;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .selected-counter-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .selected-counter-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2C2C2C;
+        }
+
+        .export-warning {
+            color: #d32f2f;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pillPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+
+        .bio-pill.just-toggled {
+            animation: pillPop 0.2s ease;
+        }
     </style>
 </head>
 <body>
@@ -639,15 +830,18 @@
             <div id="reviewStatus"></div>
         </div>
 
-        <!-- STEP 3: SELECT -->
+        <!-- STEP 3: SELECT (Pill-based UI) -->
         <div id="step-select" class="card hidden">
             <h2>Which biomarkers would you like recommendations for?</h2>
             
-            <div class="abnormal-section" id="abnormalSection"></div>
+            <div id="abnormalSection" class="pill-section"></div>
             
-            <div id="normalSection" class="normal-section hidden"></div>
+            <div id="normalSection" class="pill-section hidden"></div>
             
-            <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
+            <div class="selected-counter">
+                <span class="selected-counter-label">Selected</span>
+                <span class="selected-counter-value" id="selectedCount">0 biomarkers</span>
+            </div>
             
             <button class="btn-primary" id="getRecommendations" style="width:100%; display:block;">Get Recommendations</button>
             <div style="display:flex; gap:8px;">
@@ -666,10 +860,11 @@
             
             <div class="actions">
                 <button class="btn-primary" id="exportReport" style="width:100%; display:block;">📥 Export Report</button>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn-olive" id="backFromRecommend" style="flex:1;">← Back</button>
-                    <button class="btn-olive" id="startOver" style="flex:1;">🏠 Home</button>
-                </div>
+            </div>
+            <div id="exportWarning"></div>
+            <div style="display:flex; gap:8px; margin-top: 8px;">
+                <button class="btn-olive" id="backFromRecommend" style="flex:1;">← Back</button>
+                <button class="btn-olive" id="startOver" style="flex:1;">🏠 Home</button>
             </div>
         </div>
 
@@ -1350,28 +1545,22 @@
         function extractBiomarkersFromText(text) {
             const found = [];
             const lines = text.split('\n');
-            const processedLines = new Set(); // Track which lines we've already processed
+            const processedLines = new Set();
             
             biomarkerPatterns.forEach(pattern => {
                 for (let i = 0; i < lines.length; i++) {
-                    // Skip if we already processed this line
                     if (processedLines.has(i)) continue;
                     
                     const line = lines[i];
                     
                     if (pattern.regex.test(line)) {
-                        // Extract ALL numbers from this line and next 1-2 lines
                         const contextLines = lines.slice(i, Math.min(i + 2, lines.length)).join(' ');
-                        
-                        // Find all numbers in the context (including decimals and commas)
                         const numberMatches = contextLines.match(/\d+[.,]?\d*/g);
                         
                         if (numberMatches && numberMatches.length > 0) {
-                            // The FIRST number after the biomarker name is the patient value
                             const patientValueStr = numberMatches[0];
                             const patientValue = parseFloat(patientValueStr.replace(',', '.'));
                             
-                            // Look for the range pattern: numbers separated by hyphen/dash
                             const rangePattern = /(\d+[.,]?\d*)\s*[-–]\s*(\d+[.,]?\d*)/;
                             const rangeMatch = contextLines.match(rangePattern);
                             
@@ -1384,16 +1573,12 @@
                                 status = compareValueToRange(patientValue, min, max);
                                 rangeData = { min, max };
                             } else if (standardRanges[pattern.name]) {
-                                // Fallback to standard range
                                 const standard = standardRanges[pattern.name];
                                 status = compareValueToRange(patientValue, standard.min, standard.max);
                                 rangeData = standard;
                             }
                             
-                            // Clean the OCR name: use text before first digit, strip junk
                             const rawName = line.split(/\d/)[0].trim();
-                            // Only use OCR name if it's short enough to be a real biomarker name
-                            // and doesn't contain junk phrases — otherwise fall back to pattern name
                             const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result|lean more|about this|test result|lab result|finding|result\s*\[|\[.*\]|leaning/i;
                             const biomarkerName = (rawName && rawName.length <= 50 && !junkPhrases.test(rawName) && rawName.length > 2)
                                 ? rawName
@@ -1408,11 +1593,7 @@
                                 hasExtractedRange: !!rangeMatch
                             });
                             
-                            // Mark this line as processed to avoid duplicates
                             processedLines.add(i);
-                            
-                            // Continue searching for more occurrences of this biomarker pattern
-                            // (don't break - allows finding multiple instances like eGFR and eGFR if African American)
                         }
                     }
                 }
@@ -1496,7 +1677,8 @@
         }
 
         function updateSelectedCount() {
-            document.getElementById('selectedCount').textContent = state.selectedBiomarkers.length;
+            const count = state.selectedBiomarkers.length;
+            document.getElementById('selectedCount').textContent = count + ' biomarker' + (count !== 1 ? 's' : '');
         }
 
         // ============================================================================
@@ -1566,77 +1748,158 @@
         }
 
         // ============================================================================
-        // BIOMARKER SELECTION
+        // PILL-BASED BIOMARKER SELECTION
         // ============================================================================
-        
+
+        function toggleBiomarker(name, pillEl) {
+            const isSelected = state.selectedBiomarkers.includes(name);
+            const bio = state.biomarkers.find(b => b.name === name);
+            const isNormal = bio && bio.status === 'Normal';
+
+            if (isSelected) {
+                state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
+                pillEl.className = 'bio-pill deselected just-toggled';
+            } else {
+                state.selectedBiomarkers.push(name);
+                pillEl.className = 'bio-pill ' + (isNormal ? 'selected-normal' : 'selected-abnormal') + ' just-toggled';
+            }
+
+            setTimeout(() => pillEl.classList.remove('just-toggled'), 200);
+
+            updateSelectedCount();
+            updateSelectAllLabels();
+        }
+
+        function selectAllInSection(sectionType) {
+            const bios = state.biomarkers.filter(b => 
+                sectionType === 'abnormal' ? b.status !== 'Normal' : b.status === 'Normal'
+            );
+
+            const allSelected = bios.every(b => state.selectedBiomarkers.includes(b.name));
+
+            if (allSelected) {
+                // Deselect all in this section
+                bios.forEach(b => {
+                    state.selectedBiomarkers = state.selectedBiomarkers.filter(s => s !== b.name);
+                });
+            } else {
+                // Select all in this section
+                bios.forEach(b => {
+                    if (!state.selectedBiomarkers.includes(b.name)) {
+                        state.selectedBiomarkers.push(b.name);
+                    }
+                });
+            }
+
+            // Re-render pills to reflect new state
+            renderBiomarkerSelection();
+        }
+
+        function updateSelectAllLabels() {
+            const abnormalBios = state.biomarkers.filter(b => b.status !== 'Normal');
+            const normalBios = state.biomarkers.filter(b => b.status === 'Normal');
+
+            const abnormalBtn = document.getElementById('selectAllAbnormal');
+            const normalBtn = document.getElementById('selectAllNormal');
+
+            if (abnormalBtn && abnormalBios.length > 0) {
+                const allAbnormalSelected = abnormalBios.every(b => state.selectedBiomarkers.includes(b.name));
+                abnormalBtn.textContent = allAbnormalSelected ? 'Deselect all' : 'Select all';
+            }
+
+            if (normalBtn && normalBios.length > 0) {
+                const allNormalSelected = normalBios.every(b => state.selectedBiomarkers.includes(b.name));
+                normalBtn.textContent = allNormalSelected ? 'Deselect all' : 'Select all';
+            }
+        }
+
         function renderBiomarkerSelection() {
             const abnormal = state.biomarkers.filter(b => b.status !== 'Normal');
             const normal = state.biomarkers.filter(b => b.status === 'Normal');
-            
-            // Abnormal section
-            let abnormalHTML = '<h3>Out of range (' + abnormal.length + ')</h3>';
-            abnormal.forEach(bio => {
-                const statusClass = bio.status === 'High' ? 'status-high' : 'status-low';
-                abnormalHTML += `
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="bio-${bio.name}" data-name="${bio.name}" 
-                               ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
-                        <label for="bio-${bio.name}">
-                            <strong>${bio.name}</strong>
-                            <span class="status-indicator ${statusClass}">${bio.status}</span>
-                        </label>
-                    </div>
+
+            // --- Abnormal section ---
+            const abnormalSection = document.getElementById('abnormalSection');
+            abnormalSection.innerHTML = '';
+
+            if (abnormal.length > 0) {
+                const allAbnormalSelected = abnormal.every(b => state.selectedBiomarkers.includes(b.name));
+
+                const header = document.createElement('div');
+                header.className = 'pill-section-header';
+                header.innerHTML = `
+                    <span class="pill-section-title">
+                        Out of range
+                        <span class="pill-count-badge abnormal">${abnormal.length}</span>
+                    </span>
+                    <button class="pill-select-all" id="selectAllAbnormal">${allAbnormalSelected ? 'Deselect all' : 'Select all'}</button>
                 `;
-            });
-            
-            document.getElementById('abnormalSection').innerHTML = abnormalHTML;
-            
-            document.querySelectorAll('#abnormalSection [data-name]').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const name = this.dataset.name;
-                    if (this.checked && !state.selectedBiomarkers.includes(name)) {
-                        state.selectedBiomarkers.push(name);
-                    } else if (!this.checked) {
-                        state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
-                    }
-                    updateSelectedCount();
-                });
-            });
-            
-            // Normal section
-            if (normal.length > 0) {
-                let normalHTML = '<h3>Normal (' + normal.length + ')</h3>';
-                normal.forEach(bio => {
-                    normalHTML += `
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="normal-${bio.name}" data-name="${bio.name}" 
-                                   ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
-                            <label for="normal-${bio.name}">
-                                ${bio.name}
-                                <span class="status-indicator status-normal">Normal</span>
-                            </label>
-                        </div>
+                abnormalSection.appendChild(header);
+
+                const container = document.createElement('div');
+                container.className = 'pill-container';
+
+                abnormal.forEach(bio => {
+                    const isSelected = state.selectedBiomarkers.includes(bio.name);
+                    const statusBadgeClass = bio.status === 'High' ? 'high' : 'low';
+
+                    const pill = document.createElement('div');
+                    pill.className = 'bio-pill ' + (isSelected ? 'selected-abnormal' : 'deselected');
+                    pill.innerHTML = `
+                        <span>${bio.name}</span>
+                        <span class="pill-status-badge ${statusBadgeClass}">${bio.status}</span>
                     `;
+                    pill.addEventListener('click', () => toggleBiomarker(bio.name, pill));
+                    container.appendChild(pill);
                 });
-                
-                document.getElementById('normalSection').innerHTML = normalHTML;
-                document.getElementById('normalSection').classList.remove('hidden');
-                
-                document.querySelectorAll('#normalSection [data-name]').forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const name = this.dataset.name;
-                        if (this.checked && !state.selectedBiomarkers.includes(name)) {
-                            state.selectedBiomarkers.push(name);
-                        } else if (!this.checked) {
-                            state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
-                        }
-                        updateSelectedCount();
-                    });
-                });
-            } else {
-                document.getElementById('normalSection').classList.add('hidden');
+
+                abnormalSection.appendChild(container);
+
+                document.getElementById('selectAllAbnormal').addEventListener('click', () => selectAllInSection('abnormal'));
             }
-            
+
+            // --- Normal section ---
+            const normalSection = document.getElementById('normalSection');
+            normalSection.innerHTML = '';
+
+            if (normal.length > 0) {
+                normalSection.classList.remove('hidden');
+
+                const allNormalSelected = normal.every(b => state.selectedBiomarkers.includes(b.name));
+
+                const header = document.createElement('div');
+                header.className = 'pill-section-header';
+                header.innerHTML = `
+                    <span class="pill-section-title">
+                        Normal
+                        <span class="pill-count-badge normal">${normal.length}</span>
+                    </span>
+                    <button class="pill-select-all" id="selectAllNormal">${allNormalSelected ? 'Deselect all' : 'Select all'}</button>
+                `;
+                normalSection.appendChild(header);
+
+                const container = document.createElement('div');
+                container.className = 'pill-container';
+
+                normal.forEach(bio => {
+                    const isSelected = state.selectedBiomarkers.includes(bio.name);
+
+                    const pill = document.createElement('div');
+                    pill.className = 'bio-pill ' + (isSelected ? 'selected-normal' : 'deselected');
+                    pill.innerHTML = `
+                        <span>${bio.name}</span>
+                        <span class="pill-status-badge normal">Normal</span>
+                    `;
+                    pill.addEventListener('click', () => toggleBiomarker(bio.name, pill));
+                    container.appendChild(pill);
+                });
+
+                normalSection.appendChild(container);
+
+                document.getElementById('selectAllNormal').addEventListener('click', () => selectAllInSection('normal'));
+            } else {
+                normalSection.classList.add('hidden');
+            }
+
             updateSelectedCount();
         }
 
@@ -1721,20 +1984,15 @@
             'Uric Acid': 'Uric acid is a waste product formed when your body breaks down purines, found in certain foods. When levels run high, crystals can form in joints causing discomfort. Staying well hydrated and moderating red meat and alcohol intake can help keep levels in check.'
         };
 
-        // Fuzzy description lookup — handles OCR variants like "eGFR if African American"
         function getBiomarkerDescription(bioName) {
-            // Exact match first
             if (biomarkerDescriptions[bioName]) return biomarkerDescriptions[bioName];
-            // Case-insensitive exact match
             const lowerName = bioName.toLowerCase().trim();
             for (const key of Object.keys(biomarkerDescriptions)) {
                 if (key.toLowerCase() === lowerName) return biomarkerDescriptions[key];
             }
-            // Fuzzy: check if the biomarker name contains a known key (e.g. "eGFR if African American" contains "eGFR")
             for (const key of Object.keys(biomarkerDescriptions)) {
                 if (lowerName.includes(key.toLowerCase())) return biomarkerDescriptions[key];
             }
-            // Fuzzy: check if a known key contains the biomarker name
             for (const key of Object.keys(biomarkerDescriptions)) {
                 if (key.toLowerCase().includes(lowerName)) return biomarkerDescriptions[key];
             }
@@ -1873,80 +2131,100 @@
         }
 
         function exportReport() {
-            let reportContent = `BLOOD PANEL ANALYSIS REPORT
+            // Guard: warn if nothing selected
+            const warningEl = document.getElementById('exportWarning');
+            if (!state.selectedBiomarkers || state.selectedBiomarkers.length === 0) {
+                warningEl.innerHTML = '<p class="export-warning">⚠️ No biomarkers selected. Go back and select at least one biomarker to export.</p>';
+                return;
+            }
+            // Guard: warn if recommendations haven't been generated
+            if (!state.recommendations || Object.keys(state.recommendations).length === 0) {
+                warningEl.innerHTML = '<p class="export-warning">⚠️ No recommendations to export. Please generate recommendations first.</p>';
+                return;
+            }
+            warningEl.innerHTML = '';
+
+            try {
+                let reportContent = `BLOOD PANEL ANALYSIS REPORT
 Date: ${new Date().toLocaleDateString()}
 
 BIOMARKERS ANALYZED:
 `;
 
-            const abnormalSelected = state.selectedBiomarkers.filter(name => {
-                const bio = state.biomarkers.find(b => b.name === name);
-                return bio && bio.status !== 'Normal';
-            });
-
-            if (abnormalSelected.length > 0) {
-                reportContent += `\n⚠️ OUT OF RANGE:\n`;
-                abnormalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    reportContent += `  - ${name} (${rec.status})\n`;
+                const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                    const bio = state.biomarkers.find(b => b.name === name);
+                    return bio && bio.status !== 'Normal';
                 });
-            }
 
-            const normalSelected = state.selectedBiomarkers.filter(name => {
-                const bio = state.biomarkers.find(b => b.name === name);
-                return bio && bio.status === 'Normal';
-            });
+                if (abnormalSelected.length > 0) {
+                    reportContent += `\n⚠️ OUT OF RANGE:\n`;
+                    abnormalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        if (rec) {
+                            reportContent += `  - ${name} (${rec.status})\n`;
+                        }
+                    });
+                }
 
-            if (normalSelected.length > 0) {
-                reportContent += `\n✅ NORMAL:\n`;
-                normalSelected.forEach(name => {
-                    reportContent += `  - ${name} (Normal)\n`;
+                const normalSelected = state.selectedBiomarkers.filter(name => {
+                    const bio = state.biomarkers.find(b => b.name === name);
+                    return bio && bio.status === 'Normal';
                 });
-            }
 
-            reportContent += `\n\nRECOMMENDATIONS:\n`;
-            
-            if (abnormalSelected.length > 0) {
-                reportContent += `\nOUT OF RANGE FOODS:\n`;
-                abnormalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    if (rec && rec.foods) {
-                        reportContent += `\n${name} (${rec.status}):\n`;
-                        rec.foods.forEach(food => {
-                            reportContent += `  - ${food.name}: ${food.why}\n`;
-                        });
-                    }
-                });
-            }
+                if (normalSelected.length > 0) {
+                    reportContent += `\n✅ NORMAL:\n`;
+                    normalSelected.forEach(name => {
+                        reportContent += `  - ${name} (Normal)\n`;
+                    });
+                }
 
-            if (normalSelected.length > 0) {
-                reportContent += `\nMAINTENANCE FOODS:\n`;
-                normalSelected.forEach(name => {
-                    const rec = state.recommendations[name];
-                    if (rec && rec.foods) {
-                        reportContent += `\n${name} (Normal):\n`;
-                        rec.foods.forEach(food => {
-                            reportContent += `  - ${food.name}: ${food.why}\n`;
-                        });
-                    }
-                });
-            }
+                reportContent += `\n\nRECOMMENDATIONS:\n`;
+                
+                if (abnormalSelected.length > 0) {
+                    reportContent += `\nOUT OF RANGE FOODS:\n`;
+                    abnormalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        if (rec && rec.foods) {
+                            reportContent += `\n${name} (${rec.status}):\n`;
+                            rec.foods.forEach(food => {
+                                reportContent += `  - ${food.name}: ${food.why}\n`;
+                            });
+                        }
+                    });
+                }
 
-            reportContent += `\n\n---
+                if (normalSelected.length > 0) {
+                    reportContent += `\nMAINTENANCE FOODS:\n`;
+                    normalSelected.forEach(name => {
+                        const rec = state.recommendations[name];
+                        if (rec && rec.foods) {
+                            reportContent += `\n${name} (Normal):\n`;
+                            rec.foods.forEach(food => {
+                                reportContent += `  - ${food.name}: ${food.why}\n`;
+                            });
+                        }
+                    });
+                }
+
+                reportContent += `\n\n---
 IMPORTANT DISCLAIMER:
 This report is educational only and not medical advice.
 Always consult your healthcare provider before making major dietary changes.
 Your data is private and automatically deleted when you close this tab.`;
-            
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+                
+                const blob = new Blob([reportContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('Export error:', err);
+                warningEl.innerHTML = '<p class="export-warning">⚠️ Something went wrong while exporting. Please try again.</p>';
+            }
         }
 
         // ============================================================================
@@ -1988,6 +2266,7 @@ Your data is private and automatically deleted when you close this tab.`;
             state.selectedBiomarkers = [];
             state.recommendations = {};
             state.extractedText = '';
+            document.getElementById('exportWarning').innerHTML = '';
             showStep('upload');
         });
         document.getElementById('closeModal').addEventListener('click', closeScience);
@@ -2014,7 +2293,6 @@ Your data is private and automatically deleted when you close this tab.`;
                 return;
             }
             
-            // Prepare feedback data
             const feedback = {
                 message: feedbackText,
                 timestamp: new Date().toISOString(),
@@ -2022,7 +2300,6 @@ Your data is private and automatically deleted when you close this tab.`;
                 url: window.location.href
             };
             
-            // Try to send to Vercel API (optional - can work without backend)
             try {
                 statusEl.innerHTML = '<span style="color: #666;">Sending...</span>';
                 
@@ -2036,13 +2313,11 @@ Your data is private and automatically deleted when you close this tab.`;
                     statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                     setTimeout(() => closeFeedback(), 2000);
                 } else {
-                    // Fallback: store locally if API fails
                     storeFeedbackLocally(feedback);
                     statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                     setTimeout(() => closeFeedback(), 2000);
                 }
             } catch (err) {
-                // Graceful fallback
                 storeFeedbackLocally(feedback);
                 statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                 setTimeout(() => closeFeedback(), 2000);
@@ -2050,7 +2325,6 @@ Your data is private and automatically deleted when you close this tab.`;
         }
 
         function storeFeedbackLocally(feedback) {
-            // Store in localStorage as fallback
             try {
                 let feedbackList = JSON.parse(localStorage.getItem('bloodPanelFeedback') || '[]');
                 feedbackList.push(feedback);
@@ -2069,7 +2343,6 @@ Your data is private and automatically deleted when you close this tab.`;
         document.getElementById('cancelFeedback').addEventListener('click', closeFeedback);
         document.getElementById('submitFeedback').addEventListener('click', submitFeedback);
         
-        // Allow Enter key to submit
         document.getElementById('feedbackText').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) {
                 submitFeedback();
