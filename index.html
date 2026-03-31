@@ -24,6 +24,7 @@
             position: relative;
         }
 
+        /* Subtle botanical watermark tiled across the whole page */
         body::before {
             content: '';
             position: fixed;
@@ -52,6 +53,7 @@
             box-shadow: 0 8px 32px rgba(29, 80, 50, 0.25);
         }
 
+        /* Decorative botanical SVG shapes overlaid on hero */
         header::before {
             content: '';
             position: absolute;
@@ -230,78 +232,51 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+        
+        .checkbox-group {
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
 
-        .section-header {
+        .checkbox-group:hover {
+            background: rgba(0,0,0,0.02);
+        }
+        
+        .checkbox-group input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            cursor: pointer;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 500;
-            color: #2C2C2C;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .select-all-btn {
-            background: transparent;
-            color: #2d7d32;
-            border: 0.5px solid rgba(45, 125, 50, 0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 200ms ease;
-        }
-
-        .select-all-btn:hover {
-            background: rgba(45, 125, 50, 0.08);
-            border-color: rgba(45, 125, 50, 0.5);
-        }
-
-        .select-all-btn:active {
-            transform: scale(0.98);
-        }
-
-        .pills-container {
-            display: flex;
             gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
         }
 
-        .biomarker-pill {
-            padding: 10px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 200ms ease;
-            display: inline-block;
+        .status-indicator {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
         }
 
-        .biomarker-pill.unselected {
-            background: transparent;
-            color: #2d7d32;
-            border: 1.5px solid #2d7d32;
+        .status-high {
+            background: #FFEBEE;
+            color: #c62828;
         }
 
-        .biomarker-pill.unselected:hover {
-            background: rgba(45, 125, 50, 0.08);
+        .status-low {
+            background: #E3F2FD;
+            color: #1565c0;
         }
 
-        .biomarker-pill.selected {
-            background: #2D7D32;
-            color: white;
-        }
-
-        .biomarker-pill.selected:hover {
-            background: #1b5e20;
+        .status-normal {
+            background: #E8F5E9;
+            color: #2D7D32;
         }
         
         button {
@@ -329,6 +304,15 @@
             cursor: not-allowed;
         }
         
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ad1457;
+        }
+
         .btn-olive {
             background: white;
             color: #2d7d32;
@@ -337,6 +321,26 @@
 
         .btn-olive:hover {
             background: #f2f7f3;
+        }
+
+        .bio-description {
+            background: rgba(255,255,255,0.75);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #3a4a3a;
+            line-height: 1.6;
+            border: 1px solid rgba(55,138,221,0.15);
+        }
+
+        .bio-description-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #378ADD;
+            margin-bottom: 4px;
         }
         
         .btn-small {
@@ -350,6 +354,32 @@
         .btn-secondary {
             background: #00897B;
             color: white;
+        }
+        
+        .btn-tertiary {
+            background: #F57C00;
+            color: white;
+        }
+        
+        .food-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2D7D32;
+        }
+        
+        .food-card h4 {
+            margin-bottom: 5px;
+        }
+        
+        .system-group {
+            margin-bottom: 30px;
+        }
+        
+        .system-group h3 {
+            margin-bottom: 15px;
+            color: #2D7D32;
         }
         
         .modal {
@@ -536,23 +566,6 @@
             color: #6a8a72;
             line-height: 1.5;
         }
-
-        .selected-counter {
-            font-size: 13px;
-            color: #2D7D32;
-            font-weight: 500;
-            padding: 12px 0;
-            text-align: center;
-        }
-
-        .status-badge {
-            font-size: 11px;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 3px;
-            background: #E8F5E9;
-            color: #2D7D32;
-        }
     </style>
 </head>
 <body>
@@ -634,7 +647,7 @@
             
             <div id="normalSection" class="normal-section hidden"></div>
             
-            <div class="selected-counter">Selected: <span id="selectedCount">0</span> biomarkers</div>
+            <p class="small-text">Selected: <span id="selectedCount">0</span> biomarkers</p>
             
             <button class="btn-primary" id="getRecommendations" style="width:100%; display:block;">Get Recommendations</button>
             <div style="display:flex; gap:8px;">
@@ -732,7 +745,7 @@
         </footer>
     </div>
 
-<script>
+    <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         const state = {
@@ -743,6 +756,10 @@
             extractedText: ''
         };
 
+        // ============================================================================
+        // COMPREHENSIVE BIOMARKER PATTERNS (40+ common lab tests)
+        // ============================================================================
+        
         const biomarkerPatterns = [
             { name: 'WBC', regex: /\bwbc\b|white\s+blood\s+cell/i },
             { name: 'RBC', regex: /\brbc\b|red\s+blood\s+cell/i },
@@ -813,6 +830,375 @@
             { name: 'UA Color', regex: /ua\s*color|urine\s*color|\bcolor\b(?=.*urin)/i }
         ];
 
+        // ============================================================================
+        // COMPREHENSIVE FOOD RECOMMENDATIONS
+        // ============================================================================
+        
+        const recommendations = {
+            'WBC': [
+                { name: 'Orange', nutrient: 'vitamin c', why: 'High in vitamin C for immune support' },
+                { name: 'Bell Pepper', nutrient: 'vitamin c', why: 'Excellent source of vitamin C' },
+                { name: 'Kiwi', nutrient: 'vitamin c', why: 'Rich in vitamin C' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Natural immune booster' }
+            ],
+            'RBC': [
+                { name: 'Red Meat', nutrient: 'iron', why: 'High in heme iron for RBC production' },
+                { name: 'Spinach', nutrient: 'iron', why: 'Good plant-based iron source' },
+                { name: 'Lentils', nutrient: 'iron', why: 'Plant-based iron powerhouse' },
+                { name: 'Fortified Cereals', nutrient: 'iron', why: 'Supplemented iron source' }
+            ],
+            'Hemoglobin': [
+                { name: 'Red Lentils', nutrient: 'iron', why: 'High iron for hemoglobin production' },
+                { name: 'Tofu', nutrient: 'iron', why: 'Complete protein with iron' },
+                { name: 'Pumpkin Seeds', nutrient: 'iron', why: 'High in iron and nutrients' },
+                { name: 'Dried Apricots', nutrient: 'iron', why: 'Natural iron source' }
+            ],
+            'Hematocrit': [
+                { name: 'Beef', nutrient: 'iron', why: 'Rich in heme iron' },
+                { name: 'Chickpeas', nutrient: 'iron', why: 'Excellent plant-based iron' },
+                { name: 'Quinoa', nutrient: 'iron', why: 'Complete protein with iron' },
+                { name: 'Dark Leafy Greens', nutrient: 'iron', why: 'Good iron content' }
+            ],
+            'MCV': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Supports healthy cell formation' },
+                { name: 'Asparagus', nutrient: 'folate', why: 'Rich in folate' },
+                { name: 'Chickpeas', nutrient: 'folate', why: 'Excellent folate source' },
+                { name: 'Avocado', nutrient: 'folate', why: 'High in folate and nutrients' }
+            ],
+            'Platelets': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate supports platelet formation' },
+                { name: 'Asparagus', nutrient: 'folate', why: 'Rich in folate' },
+                { name: 'Lentils', nutrient: 'folate', why: 'High in folate' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports blood health' }
+            ],
+            'MPV': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate supports platelet volume' },
+                { name: 'Asparagus', nutrient: 'folate', why: 'Rich in folate' },
+                { name: 'Chickpeas', nutrient: 'folate', why: 'Excellent folate source' },
+                { name: 'Brussels Sprouts', nutrient: 'folate', why: 'Good folate content' }
+            ],
+            'Glucose': [
+                { name: 'Broccoli', nutrient: 'fiber', why: 'Low glycemic index, high fiber' },
+                { name: 'Almonds', nutrient: 'magnesium', why: 'Supports glucose metabolism' },
+                { name: 'Chia Seeds', nutrient: 'fiber', why: 'High soluble fiber' },
+                { name: 'Cinnamon', nutrient: 'chromium', why: 'May help regulate blood sugar' }
+            ],
+            'BUN': [
+                { name: 'Water', nutrient: 'hydration', why: 'Supports kidney function' },
+                { name: 'Leafy Greens', nutrient: 'potassium', why: 'Supports kidney health' },
+                { name: 'Cucumber', nutrient: 'hydration', why: 'High water content' },
+                { name: 'Watermelon', nutrient: 'hydration', why: 'Hydrating and diuretic' }
+            ],
+            'Creatinine': [
+                { name: 'Leafy Greens', nutrient: 'nutrients', why: 'Supports kidney function' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Protects kidney health' },
+                { name: 'Fish', nutrient: 'omega3', why: 'Supports kidney health' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Anti-inflammatory' }
+            ],
+            'Sodium': [
+                { name: 'Low-sodium foods', nutrient: 'minerals', why: 'Reduces sodium intake' },
+                { name: 'Potassium-rich foods', nutrient: 'potassium', why: 'Balances sodium levels' },
+                { name: 'Herbs', nutrient: 'flavor', why: 'Flavoring without salt' },
+                { name: 'Bananas', nutrient: 'potassium', why: 'High potassium' }
+            ],
+            'Potassium': [
+                { name: 'Avocado', nutrient: 'potassium', why: 'Highest potassium vegetable' },
+                { name: 'Spinach', nutrient: 'potassium', why: 'High in potassium and fiber' },
+                { name: 'Banana', nutrient: 'potassium', why: 'Excellent potassium source' },
+                { name: 'Sweet Potato', nutrient: 'potassium', why: 'Good potassium and fiber' }
+            ],
+            'Calcium': [
+                { name: 'Milk', nutrient: 'calcium', why: 'High in bioavailable calcium' },
+                { name: 'Cheese', nutrient: 'calcium', why: 'Excellent calcium source' },
+                { name: 'Yogurt', nutrient: 'calcium', why: 'Rich in calcium and probiotics' },
+                { name: 'Leafy Greens', nutrient: 'calcium', why: 'Plant-based calcium source' }
+            ],
+            'Magnesium': [
+                { name: 'Almonds', nutrient: 'magnesium', why: 'High in magnesium' },
+                { name: 'Spinach', nutrient: 'magnesium', why: 'Excellent magnesium source' },
+                { name: 'Pumpkin Seeds', nutrient: 'magnesium', why: 'Rich in magnesium' },
+                { name: 'Dark Chocolate', nutrient: 'magnesium', why: 'Good magnesium content' }
+            ],
+            'Albumin': [
+                { name: 'Chicken', nutrient: 'protein', why: 'High-quality protein' },
+                { name: 'Eggs', nutrient: 'protein', why: 'Complete protein source' },
+                { name: 'Fish', nutrient: 'protein', why: 'High-quality protein' },
+                { name: 'Beans', nutrient: 'protein', why: 'Plant-based protein' }
+            ],
+            'Total Bilirubin': [
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Supports liver health' },
+                { name: 'Milk Thistle', nutrient: 'silymarin', why: 'Liver protection' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Anti-inflammatory for liver' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Liver support' }
+            ],
+            'Direct Bilirubin': [
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Liver support' },
+                { name: 'Artichoke', nutrient: 'inulin', why: 'Bile flow support' },
+                { name: 'Lemon', nutrient: 'vitamin c', why: 'Supports detoxification' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Liver health' }
+            ],
+            'ALT': [
+                { name: 'Leafy Greens', nutrient: 'chlorophyll', why: 'Supports liver detoxification' },
+                { name: 'Garlic', nutrient: 'sulfur', why: 'Liver-protective compounds' },
+                { name: 'Broccoli', nutrient: 'sulforaphane', why: 'Supports liver enzymes' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Protects liver cells' }
+            ],
+            'AST': [
+                { name: 'Milk Thistle', nutrient: 'silymarin', why: 'Protects liver cells' },
+                { name: 'Green Tea', nutrient: 'EGCG', why: 'Supports liver health' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Anti-inflammatory' },
+                { name: 'Leafy Greens', nutrient: 'nutrients', why: 'Liver support' }
+            ],
+            'Total Cholesterol': [
+                { name: 'Oats', nutrient: 'fiber', why: 'Soluble fiber reduces cholesterol' },
+                { name: 'Berries', nutrient: 'fiber', why: 'Fiber-rich antioxidants' },
+                { name: 'Beans', nutrient: 'fiber', why: 'Excellent fiber source' },
+                { name: 'Almonds', nutrient: 'monofat', why: 'Heart-healthy fats' }
+            ],
+            'HDL': [
+                { name: 'Avocado', nutrient: 'monofat', why: 'Healthy fats increase HDL' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Boosts good cholesterol' },
+                { name: 'Nuts', nutrient: 'monofat', why: 'Heart-healthy fats' },
+                { name: 'Fish', nutrient: 'omega3', why: 'Increases HDL cholesterol' }
+            ],
+            'LDL': [
+                { name: 'Oats', nutrient: 'fiber', why: 'Reduces LDL cholesterol' },
+                { name: 'Beans', nutrient: 'fiber', why: 'Lowers LDL levels' },
+                { name: 'Plant Sterols', nutrient: 'phytosterol', why: 'Blocks cholesterol absorption' },
+                { name: 'Broccoli', nutrient: 'fiber', why: 'Supports cholesterol reduction' }
+            ],
+            'Triglycerides': [
+                { name: 'Salmon', nutrient: 'omega3', why: 'Omega-3 reduces triglycerides' },
+                { name: 'Sardines', nutrient: 'omega3', why: 'High in omega-3s' },
+                { name: 'Flax Seeds', nutrient: 'omega3', why: 'Plant-based omega-3s' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Healthy fats support triglyceride health' }
+            ],
+            'Iron': [
+                { name: 'Lentils', nutrient: 'iron', why: 'Plant-based iron powerhouse' },
+                { name: 'Spinach', nutrient: 'iron', why: 'Good iron source' },
+                { name: 'Pumpkin Seeds', nutrient: 'iron', why: 'High in iron' },
+                { name: 'Red Meat', nutrient: 'iron', why: 'Heme iron absorption' }
+            ],
+            'Ferritin': [
+                { name: 'Red Meat', nutrient: 'iron', why: 'High heme iron' },
+                { name: 'Oysters', nutrient: 'iron', why: 'High iron content' },
+                { name: 'Chickpeas', nutrient: 'iron', why: 'Good iron source' },
+                { name: 'Fortified Cereals', nutrient: 'iron', why: 'Supplemented iron' }
+            ],
+            'Vitamin B12': [
+                { name: 'Nutritional Yeast', nutrient: 'vitamin b12', why: 'Fortified B12 source' },
+                { name: 'Eggs', nutrient: 'vitamin b12', why: 'Natural B12 source' },
+                { name: 'Fish', nutrient: 'vitamin b12', why: 'High in B12' },
+                { name: 'Fortified Plant Milk', nutrient: 'vitamin b12', why: 'Supplemented B12' }
+            ],
+            'Folate': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Excellent folate source' },
+                { name: 'Asparagus', nutrient: 'folate', why: 'Rich in folate' },
+                { name: 'Chickpeas', nutrient: 'folate', why: 'High in folate' },
+                { name: 'Avocado', nutrient: 'folate', why: 'Good folate content' }
+            ],
+            'TSH': [
+                { name: 'Seaweed', nutrient: 'iodine', why: 'Essential for thyroid' },
+                { name: 'Brazil Nuts', nutrient: 'selenium', why: 'Supports thyroid function' },
+                { name: 'Zinc-rich Foods', nutrient: 'zinc', why: 'Thyroid support' },
+                { name: 'Fish', nutrient: 'iodine', why: 'Good iodine source' }
+            ],
+            'Free T4': [
+                { name: 'Seaweed', nutrient: 'iodine', why: 'Supports T4 production' },
+                { name: 'Salmon', nutrient: 'selenium', why: 'Supports thyroid hormones' },
+                { name: 'Brazil Nuts', nutrient: 'selenium', why: 'Thyroid health' },
+                { name: 'Zinc Foods', nutrient: 'zinc', why: 'Hormone production' }
+            ],
+            'Blood Pressure': [
+                { name: 'Spinach', nutrient: 'potassium', why: 'Supports blood pressure' },
+                { name: 'Kale', nutrient: 'potassium', why: 'Rich in potassium' },
+                { name: 'Banana', nutrient: 'potassium', why: 'Excellent potassium' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Natural blood pressure support' }
+            ],
+            'Systolic BP': [
+                { name: 'Beets', nutrient: 'nitrates', why: 'Natural nitrates help relax blood vessels' },
+                { name: 'Leafy Greens', nutrient: 'potassium', why: 'Potassium balances sodium and eases pressure' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Flavonoids support healthy artery function' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Soluble fiber linked to lower blood pressure' }
+            ],
+            'Diastolic BP': [
+                { name: 'Dark Chocolate', nutrient: 'magnesium', why: 'Flavanols help relax blood vessels' },
+                { name: 'Banana', nutrient: 'potassium', why: 'Potassium helps muscles including the heart relax' },
+                { name: 'Yogurt', nutrient: 'calcium', why: 'Calcium supports healthy vessel tone' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Allicin has natural vasodilating effects' }
+            ],
+            'RDW': [
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate supports uniform red blood cell production' },
+                { name: 'Eggs', nutrient: 'vitamin b12', why: 'B12 essential for consistent cell sizing' },
+                { name: 'Lentils', nutrient: 'iron', why: 'Iron supports healthy red blood cell formation' },
+                { name: 'Fortified Cereals', nutrient: 'iron', why: 'Provides iron and B vitamins together' }
+            ],
+            'Neutrophil %': [
+                { name: 'Garlic', nutrient: 'allicin', why: 'Supports neutrophil activity against infection' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Anti-inflammatory support for immune balance' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Gut health influences immune cell balance' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate needed for white blood cell production' }
+            ],
+            'Lymphocyte %': [
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Vitamin C supports lymphocyte function' },
+                { name: 'Almonds', nutrient: 'vitamin e', why: 'Vitamin E supports immune cell health' },
+                { name: 'Sunflower Seeds', nutrient: 'vitamin e', why: 'Rich in immune-supporting vitamin E' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Probiotics support lymphocyte balance' }
+            ],
+            'Monocyte %': [
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Curcumin helps regulate monocyte activity' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants reduce monocyte-triggering inflammation' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Polyphenols support healthy immune balance' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Oleic acid has anti-inflammatory properties' }
+            ],
+            'Eosinophil %': [
+                { name: 'Quercetin Foods', nutrient: 'quercetin', why: 'Quercetin has natural anti-allergic properties' },
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Omega-3s reduce inflammatory signaling' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Supports healthy inflammatory response' },
+                { name: 'Pineapple', nutrient: 'bromelain', why: 'Bromelain has anti-inflammatory effects' }
+            ],
+            'Basophil %': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Reduces inflammatory signaling linked to basophils' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports balanced immune response' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants support immune cell balance' },
+                { name: 'Green Tea', nutrient: 'EGCG', why: 'EGCG helps modulate immune activity' }
+            ],
+            'Neutrophil Absolute': [
+                { name: 'Garlic', nutrient: 'allicin', why: 'Supports neutrophil activity against infection' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Gut health influences immune cell counts' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate needed for white blood cell production' },
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Vitamin C supports immune cell production' }
+            ],
+            'Lymphocyte Absolute': [
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Supports lymphocyte production' },
+                { name: 'Almonds', nutrient: 'vitamin e', why: 'Vitamin E supports lymphocyte health' },
+                { name: 'Yogurt', nutrient: 'probiotics', why: 'Supports immune cell balance' },
+                { name: 'Leafy Greens', nutrient: 'folate', why: 'Folate essential for cell production' }
+            ],
+            'Monocyte Absolute': [
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Helps regulate monocyte activity' },
+                { name: 'Olive Oil', nutrient: 'monofat', why: 'Anti-inflammatory oleic acid' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Polyphenols support immune balance' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Reduces inflammation-driven monocyte elevation' }
+            ],
+            'Eosinophil Absolute': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Omega-3s reduce inflammatory signaling' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Anti-inflammatory support' },
+                { name: 'Pineapple', nutrient: 'bromelain', why: 'Natural anti-inflammatory enzyme' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports healthy immune response' }
+            ],
+            'Basophil Absolute': [
+                { name: 'Omega-3 Fish', nutrient: 'omega3', why: 'Reduces inflammatory signaling' },
+                { name: 'Green Tea', nutrient: 'EGCG', why: 'Modulates immune activity' },
+                { name: 'Ginger', nutrient: 'antioxidant', why: 'Supports balanced immune response' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Antioxidants support immune balance' }
+            ],
+            'Anion Gap': [
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration supports electrolyte balance' },
+                { name: 'Leafy Greens', nutrient: 'potassium', why: 'Potassium helps maintain acid-base balance' },
+                { name: 'Bananas', nutrient: 'potassium', why: 'Supports electrolyte equilibrium' },
+                { name: 'Avocado', nutrient: 'potassium', why: 'Rich in potassium for electrolyte balance' }
+            ],
+            'A/G Ratio': [
+                { name: 'Chicken', nutrient: 'protein', why: 'High-quality protein supports albumin production' },
+                { name: 'Eggs', nutrient: 'protein', why: 'Complete protein for healthy protein balance' },
+                { name: 'Fish', nutrient: 'protein', why: 'Lean protein supports albumin levels' },
+                { name: 'Legumes', nutrient: 'protein', why: 'Plant-based protein for overall protein balance' }
+            ],
+            'VLDL': [
+                { name: 'Salmon', nutrient: 'omega3', why: 'Omega-3s directly lower VLDL production' },
+                { name: 'Chia Seeds', nutrient: 'omega3', why: 'Plant-based omega-3s reduce triglycerides' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Soluble fiber reduces VLDL cholesterol' },
+                { name: 'Avocado', nutrient: 'monofat', why: 'Healthy fats improve lipid balance' }
+            ],
+            'UA Leukocyte Esterase': [
+                { name: 'Water', nutrient: 'hydration', why: 'Flushing the urinary tract reduces irritation' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'Proanthocyanidins may reduce bacterial adhesion' },
+                { name: 'Probiotic Yogurt', nutrient: 'probiotics', why: 'Supports healthy urinary tract bacteria balance' },
+                { name: 'Garlic', nutrient: 'allicin', why: 'Natural antimicrobial properties' }
+            ],
+            'UA Nitrite': [
+                { name: 'Water', nutrient: 'hydration', why: 'Staying hydrated helps flush bacteria from the urinary tract' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May help prevent bacterial adhesion to urinary tract walls' },
+                { name: 'Probiotic Foods', nutrient: 'probiotics', why: 'Supports healthy urinary and gut microbiome' },
+                { name: 'Vitamin C Foods', nutrient: 'vitamin c', why: 'Acidifies urine which may inhibit bacterial growth' }
+            ],
+            'UA Urobilinogen': [
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Supports liver function and bilirubin processing' },
+                { name: 'Beets', nutrient: 'betaine', why: 'Betaine supports liver detoxification pathways' },
+                { name: 'Artichoke', nutrient: 'inulin', why: 'Supports bile flow and liver health' },
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration supports waste excretion' }
+            ],
+            'UA Bilirubin': [
+                { name: 'Leafy Greens', nutrient: 'chlorophyll', why: 'Supports liver detoxification' },
+                { name: 'Turmeric', nutrient: 'curcumin', why: 'Supports healthy bile flow and liver function' },
+                { name: 'Beets', nutrient: 'betaine', why: 'Supports liver processing of bilirubin' },
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration helps the liver process and excrete waste' }
+            ],
+            'UA Protein': [
+                { name: 'Water', nutrient: 'hydration', why: 'Supports kidney filtration function' },
+                { name: 'Berries', nutrient: 'antioxidant', why: 'Antioxidants protect kidney cells' },
+                { name: 'Leafy Greens', nutrient: 'antioxidant', why: 'Supports kidney health' },
+                { name: 'Fish', nutrient: 'omega3', why: 'Omega-3s support kidney function' }
+            ],
+            'UA Blood': [
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration supports urinary tract health' },
+                { name: 'Leafy Greens', nutrient: 'vitamin k', why: 'Vitamin K supports healthy blood clotting' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May support urinary tract health' },
+                { name: 'Beets', nutrient: 'antioxidant', why: 'Supports overall urinary health' }
+            ],
+            'UA Ketones': [
+                { name: 'Complex Carbs', nutrient: 'carbohydrate', why: 'Adequate carbs reduce fat-burning ketone production' },
+                { name: 'Water', nutrient: 'hydration', why: 'Hydration helps excrete ketones efficiently' },
+                { name: 'Sweet Potato', nutrient: 'carbohydrate', why: 'Healthy carbs reduce excessive ketosis' },
+                { name: 'Oats', nutrient: 'fiber', why: 'Steady carb release prevents ketone spikes' }
+            ],
+            'UA Glucose': [
+                { name: 'Broccoli', nutrient: 'fiber', why: 'Low glycemic, helps manage blood sugar' },
+                { name: 'Chia Seeds', nutrient: 'fiber', why: 'Slows glucose absorption' },
+                { name: 'Cinnamon', nutrient: 'chromium', why: 'May help regulate blood sugar levels' },
+                { name: 'Leafy Greens', nutrient: 'magnesium', why: 'Magnesium supports insulin sensitivity' }
+            ],
+            'UA Specific Gravity': [
+                { name: 'Water', nutrient: 'hydration', why: 'Primary way to normalize urine concentration' },
+                { name: 'Cucumber', nutrient: 'hydration', why: 'High water content supports hydration' },
+                { name: 'Watermelon', nutrient: 'hydration', why: 'Naturally hydrating fruit' },
+                { name: 'Herbal Tea', nutrient: 'hydration', why: 'Caffeine-free hydration support' }
+            ],
+            'UA pH': [
+                { name: 'Leafy Greens', nutrient: 'alkaline', why: 'Alkaline-forming foods help balance urine pH' },
+                { name: 'Citrus Fruits', nutrient: 'vitamin c', why: 'Despite being acidic, metabolize to alkaline ash' },
+                { name: 'Water', nutrient: 'hydration', why: 'Adequate hydration stabilizes urine pH' },
+                { name: 'Almonds', nutrient: 'alkaline', why: 'Alkaline-forming and nutrient dense' }
+            ],
+            'UA Clarity': [
+                { name: 'Water', nutrient: 'hydration', why: 'The most effective way to clear cloudy urine' },
+                { name: 'Cranberry Juice', nutrient: 'antioxidant', why: 'May help reduce urinary tract bacteria' },
+                { name: 'Probiotic Foods', nutrient: 'probiotics', why: 'Supports healthy urinary microbiome' },
+                { name: 'Parsley', nutrient: 'diuretic', why: 'Natural mild diuretic that helps flush the urinary tract' }
+            ],
+            'UA Color': [
+                { name: 'Water', nutrient: 'hydration', why: 'Pale yellow is the goal — hydration gets you there' },
+                { name: 'Cucumber', nutrient: 'hydration', why: 'Supports healthy hydration levels' },
+                { name: 'Watermelon', nutrient: 'hydration', why: 'Naturally hydrating and kidney-friendly' },
+                { name: 'Herbal Tea', nutrient: 'hydration', why: 'Non-caffeinated hydration to normalize color' }
+            ]
+        };
+
+        const scienceExplanations = {
+            'vitamin c': 'Vitamin C boosts immune function and enhances iron absorption by up to 300%.',
+            'iron': 'Iron is essential for hemoglobin production and oxygen transport throughout the body.',
+            'fiber': 'Soluble fiber binds cholesterol and removes it from circulation, lowering LDL levels.',
+            'folate': 'Folate supports cell division and blood formation for healthy blood cells.',
+            'potassium': 'Potassium regulates blood pressure and supports heart function.',
+            'calcium': 'Calcium builds and maintains strong bones and teeth.',
+            'magnesium': 'Magnesium aids glucose metabolism and muscle function.',
+            'protein': 'Protein is essential for building and repairing tissues including red blood cells.',
+            'omega3': 'Omega-3 fatty acids reduce inflammation and support heart and brain health.',
+            'antioxidant': 'Antioxidants protect cells from oxidative damage and support overall health.',
+            'default': 'These foods are nutrient-dense and support healthy biomarker levels.'
+        };
+
         const standardRanges = {
             'WBC': { min: 4.5, max: 11.0, unit: 'K/uL' },
             'RBC': { min: 4.5, max: 5.9, unit: 'M/uL' },
@@ -853,6 +1239,7 @@
             'Folate': { min: 2.7, max: 17.0, unit: 'ng/mL' },
             'TSH': { min: 0.4, max: 4.0, unit: 'mIU/L' },
             'Free T4': { min: 0.8, max: 1.8, unit: 'ng/dL' },
+            'Blood Pressure': { min: 90, max: 120, unit: 'mmHg' },
             'Systolic BP': { min: 90, max: 120, unit: 'mmHg' },
             'Diastolic BP': { min: 60, max: 80, unit: 'mmHg' },
             'RDW': { min: 11.5, max: 14.5, unit: '%' },
@@ -873,6 +1260,10 @@
             'UA pH': { min: 4.5, max: 8.0, unit: '' }
         };
 
+        // ============================================================================
+        // PDF PROCESSING
+        // ============================================================================
+        
         async function convertPDFToImages(file) {
             try {
                 const arrayBuffer = await file.arrayBuffer();
@@ -932,6 +1323,20 @@
             document.getElementById('progressText').textContent = percentage + '%';
         }
 
+        function parseValueAndRange(text) {
+            const rangeRegex = /\((?:reference|normal|ref|range)[:\s]*([0-9.]+)\s*[-–]\s*([0-9.]+)\)/i;
+            const match = text.match(rangeRegex);
+            
+            if (match) {
+                return {
+                    min: parseFloat(match[1]),
+                    max: parseFloat(match[2]),
+                    foundRange: true
+                };
+            }
+            return { foundRange: false };
+        }
+
         function compareValueToRange(value, min, max) {
             if (value < min) {
                 return 'Low';
@@ -945,22 +1350,28 @@
         function extractBiomarkersFromText(text) {
             const found = [];
             const lines = text.split('\n');
-            const processedLines = new Set();
+            const processedLines = new Set(); // Track which lines we've already processed
             
             biomarkerPatterns.forEach(pattern => {
                 for (let i = 0; i < lines.length; i++) {
+                    // Skip if we already processed this line
                     if (processedLines.has(i)) continue;
                     
                     const line = lines[i];
                     
                     if (pattern.regex.test(line)) {
+                        // Extract ALL numbers from this line and next 1-2 lines
                         const contextLines = lines.slice(i, Math.min(i + 2, lines.length)).join(' ');
+                        
+                        // Find all numbers in the context (including decimals and commas)
                         const numberMatches = contextLines.match(/\d+[.,]?\d*/g);
                         
                         if (numberMatches && numberMatches.length > 0) {
+                            // The FIRST number after the biomarker name is the patient value
                             const patientValueStr = numberMatches[0];
                             const patientValue = parseFloat(patientValueStr.replace(',', '.'));
                             
+                            // Look for the range pattern: numbers separated by hyphen/dash
                             const rangePattern = /(\d+[.,]?\d*)\s*[-–]\s*(\d+[.,]?\d*)/;
                             const rangeMatch = contextLines.match(rangePattern);
                             
@@ -973,12 +1384,16 @@
                                 status = compareValueToRange(patientValue, min, max);
                                 rangeData = { min, max };
                             } else if (standardRanges[pattern.name]) {
+                                // Fallback to standard range
                                 const standard = standardRanges[pattern.name];
                                 status = compareValueToRange(patientValue, standard.min, standard.max);
                                 rangeData = standard;
                             }
                             
+                            // Clean the OCR name: use text before first digit, strip junk
                             const rawName = line.split(/\d/)[0].trim();
+                            // Only use OCR name if it's short enough to be a real biomarker name
+                            // and doesn't contain junk phrases — otherwise fall back to pattern name
                             const junkPhrases = /learn more|click here|see details|view result|reference|normal range|in range|out of range|your result|lean more|about this|test result|lab result|finding|result\s*\[|\[.*\]|leaning/i;
                             const biomarkerName = (rawName && rawName.length <= 50 && !junkPhrases.test(rawName) && rawName.length > 2)
                                 ? rawName
@@ -993,7 +1408,11 @@
                                 hasExtractedRange: !!rangeMatch
                             });
                             
+                            // Mark this line as processed to avoid duplicates
                             processedLines.add(i);
+                            
+                            // Continue searching for more occurrences of this biomarker pattern
+                            // (don't break - allows finding multiple instances like eGFR and eGFR if African American)
                         }
                     }
                 }
@@ -1040,6 +1459,10 @@
             }
         }
 
+        // ============================================================================
+        // UI FUNCTIONS
+        // ============================================================================
+        
         function showStep(stepName) {
             document.getElementById('step-upload').classList.add('hidden');
             document.getElementById('step-review').classList.add('hidden');
@@ -1076,6 +1499,10 @@
             document.getElementById('selectedCount').textContent = state.selectedBiomarkers.length;
         }
 
+        // ============================================================================
+        // REVIEW TABLE
+        // ============================================================================
+        
         function renderReviewTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -1096,7 +1523,7 @@
                             <input type="number" step="0.1" id="max-${index}" placeholder="Max" value="${bio.maxRange}" style="flex: 1;" />
                         </div>
                     </td>
-                    <td><span class="status-badge">${bio.status}</span></td>
+                    <td><span class="status-badge ${statusClass}">${bio.status}</span></td>
                 `;
                 
                 tbody.appendChild(row);
@@ -1129,6 +1556,7 @@
                 const row = tbody.rows[index];
                 const badge = row.querySelector('.status-badge');
                 badge.textContent = status;
+                badge.className = `status-badge ${status === 'High' ? 'status-high' : status === 'Low' ? 'status-low' : 'status-normal'}`;
             }
         }
 
@@ -1137,49 +1565,74 @@
             showStep('select');
         }
 
+        // ============================================================================
+        // BIOMARKER SELECTION
+        // ============================================================================
+        
         function renderBiomarkerSelection() {
             const abnormal = state.biomarkers.filter(b => b.status !== 'Normal');
             const normal = state.biomarkers.filter(b => b.status === 'Normal');
             
-            let abnormalHTML = `
-                <div class="section-header">
-                    <span class="section-title">Out of range (${abnormal.length})</span>
-                    <button class="select-all-btn" data-section="abnormal" onclick="toggleSelectAll('abnormal')">Select all</button>
-                </div>
-                <div class="pills-container" id="abnormal-pills">
-            `;
-            
+            // Abnormal section
+            let abnormalHTML = '<h3>Out of range (' + abnormal.length + ')</h3>';
             abnormal.forEach(bio => {
-                const isSelected = state.selectedBiomarkers.includes(bio.name);
-                const pillClass = isSelected ? 'selected' : 'unselected';
+                const statusClass = bio.status === 'High' ? 'status-high' : 'status-low';
                 abnormalHTML += `
-                    <button class="biomarker-pill ${pillClass}" data-name="${bio.name}" onclick="toggleBiomarker('${bio.name}', 'abnormal')">${bio.name}</button>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="bio-${bio.name}" data-name="${bio.name}" 
+                               ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
+                        <label for="bio-${bio.name}">
+                            <strong>${bio.name}</strong>
+                            <span class="status-indicator ${statusClass}">${bio.status}</span>
+                        </label>
+                    </div>
                 `;
             });
             
-            abnormalHTML += '</div>';
             document.getElementById('abnormalSection').innerHTML = abnormalHTML;
             
+            document.querySelectorAll('#abnormalSection [data-name]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const name = this.dataset.name;
+                    if (this.checked && !state.selectedBiomarkers.includes(name)) {
+                        state.selectedBiomarkers.push(name);
+                    } else if (!this.checked) {
+                        state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
+                    }
+                    updateSelectedCount();
+                });
+            });
+            
+            // Normal section
             if (normal.length > 0) {
-                let normalHTML = `
-                    <div class="section-header">
-                        <span class="section-title">Normal (${normal.length})</span>
-                        <button class="select-all-btn" data-section="normal" onclick="toggleSelectAll('normal')">Select all</button>
-                    </div>
-                    <div class="pills-container" id="normal-pills">
-                `;
-                
+                let normalHTML = '<h3>Normal (' + normal.length + ')</h3>';
                 normal.forEach(bio => {
-                    const isSelected = state.selectedBiomarkers.includes(bio.name);
-                    const pillClass = isSelected ? 'selected' : 'unselected';
                     normalHTML += `
-                        <button class="biomarker-pill ${pillClass}" data-name="${bio.name}" onclick="toggleBiomarker('${bio.name}', 'normal')">${bio.name}</button>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="normal-${bio.name}" data-name="${bio.name}" 
+                                   ${state.selectedBiomarkers.includes(bio.name) ? 'checked' : ''} />
+                            <label for="normal-${bio.name}">
+                                ${bio.name}
+                                <span class="status-indicator status-normal">Normal</span>
+                            </label>
+                        </div>
                     `;
                 });
                 
-                normalHTML += '</div>';
                 document.getElementById('normalSection').innerHTML = normalHTML;
                 document.getElementById('normalSection').classList.remove('hidden');
+                
+                document.querySelectorAll('#normalSection [data-name]').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const name = this.dataset.name;
+                        if (this.checked && !state.selectedBiomarkers.includes(name)) {
+                            state.selectedBiomarkers.push(name);
+                        } else if (!this.checked) {
+                            state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== name);
+                        }
+                        updateSelectedCount();
+                    });
+                });
             } else {
                 document.getElementById('normalSection').classList.add('hidden');
             }
@@ -1187,71 +1640,105 @@
             updateSelectedCount();
         }
 
-        window.toggleBiomarker = function(bioName, section) {
-            const isSelected = state.selectedBiomarkers.includes(bioName);
-            
-            if (isSelected) {
-                state.selectedBiomarkers = state.selectedBiomarkers.filter(b => b !== bioName);
-            } else {
-                state.selectedBiomarkers.push(bioName);
-            }
-            
-            updateSelectedCount();
-            updatePillState(bioName, section);
-            updateSelectAllButtonState(section);
+        // ============================================================================
+        // RECOMMENDATIONS
+        // ============================================================================
+
+        const biomarkerDescriptions = {
+            'WBC': 'White blood cells are your body\'s immune army — they patrol your bloodstream and fight off infections. When levels are off, it can simply mean your body is responding to something like a cold or mild stress. It\'s rarely cause for alarm on its own.',
+            'RBC': 'Red blood cells are like delivery trucks — they carry oxygen from your lungs to every cell in your body. When counts are off, your body may not be getting quite enough oxygen, which can leave you feeling tired or short of breath.',
+            'Hemoglobin': 'Hemoglobin is the protein inside red blood cells that actually carries the oxygen. Think of it as the cargo in the delivery truck. Low hemoglobin is one of the most common reasons people feel unusually fatigued or run down.',
+            'Hematocrit': 'Hematocrit measures what percentage of your blood is made up of red blood cells. It\'s a broad snapshot of how well your blood can carry oxygen throughout your body. Diet, hydration, and iron levels all play a role.',
+            'MCV': 'MCV tells us about the size of your red blood cells. Cells that are too big or too small can\'t carry oxygen as efficiently. This is often linked to levels of folate or B12 in your diet — both easy to address through food.',
+            'MCH': 'MCH measures how much hemoglobin is packed into each red blood cell. It works alongside MCV to give your doctor a clearer picture of how your red blood cells are functioning and whether nutrients like iron or B12 may need attention.',
+            'MCHC': 'MCHC measures the concentration of hemoglobin in your red blood cells. It helps identify whether your cells are properly filled with the oxygen-carrying protein they need to do their job well.',
+            'Platelets': 'Platelets are tiny cells that help your blood clot when you have a cut or injury — think of them as your body\'s repair crew. When levels are within range, your body can heal efficiently and prevent excess bleeding.',
+            'MPV': 'MPV measures the average size of your platelets. Larger platelets tend to be more active. This number helps give context to your platelet count and is usually looked at alongside it rather than on its own.',
+            'Glucose': 'Glucose is your body\'s main fuel source — it\'s the sugar your cells use for energy. When fasting glucose runs high, it can be a sign your body is having trouble managing blood sugar. Diet, exercise, and sleep all have a meaningful impact here.',
+            'BUN': 'BUN stands for Blood Urea Nitrogen — it\'s a waste product your kidneys filter out of your blood. Think of your kidneys as a water treatment plant. When BUN is slightly off, hydration and protein intake are usually the first things to look at.',
+            'Creatinine': 'Creatinine is another waste product filtered by your kidneys, produced naturally by muscle activity. It\'s a reliable indicator of how well your kidneys are doing their job. Staying well hydrated supports healthy creatinine levels.',
+            'eGFR': 'eGFR estimates how well your kidneys are filtering your blood each minute — like a flow rate reading on your kidney\'s filtration system. Higher numbers are better. It\'s one of the most important markers of long-term kidney health.',
+            'Sodium': 'Sodium helps regulate fluid balance and supports nerve and muscle function — it\'s essentially your body\'s electrical conductor. Most people get plenty through food, so levels that are off usually relate to hydration rather than diet.',
+            'Potassium': 'Potassium works with sodium to keep your heart rhythm steady and muscles functioning properly. Think of them as two sides of a balance scale. Fruits, vegetables, and whole foods are your best natural sources.',
+            'Chloride': 'Chloride works alongside sodium and potassium to maintain fluid balance and support digestion. It rarely gets much attention on its own, but it\'s a quiet and important part of keeping your body\'s chemistry in balance.',
+            'CO2': 'This measures bicarbonate in your blood, which helps keep your body\'s pH stable — like a natural buffer system. It\'s usually evaluated alongside other electrolytes to get a full picture of your body\'s acid-base balance.',
+            'Calcium': 'Calcium isn\'t just for bones — it also helps your heart beat, muscles contract, and nerves send signals. Most people think of dairy, but leafy greens and fortified foods are great sources too.',
+            'Phosphorus': 'Phosphorus works closely with calcium to build strong bones and teeth. It\'s also involved in how your body produces energy. Most people get enough through food, so levels outside the range are usually worth a closer look.',
+            'Magnesium': 'Magnesium is involved in over 300 processes in your body — from energy production to muscle relaxation to blood sugar control. Many people don\'t get quite enough through diet, making it one of the more common quiet deficiencies.',
+            'Total Protein': 'Total protein measures the combined level of albumin and globulin in your blood. Protein is the building block your body uses for tissue repair, immune function, and keeping fluid in the right places.',
+            'Albumin': 'Albumin is your blood\'s main transport protein — it carries hormones, vitamins, and medications through your bloodstream. It\'s also a good marker of overall nutrition. Levels respond well to adequate protein intake.',
+            'Globulin': 'Globulins are a group of proteins that support your immune system and help transport nutrients. They work alongside albumin to keep your blood\'s chemistry balanced and your defenses strong.',
+            'Total Bilirubin': 'Bilirubin is a yellow pigment produced when your body breaks down old red blood cells — your liver then processes and removes it. Mildly elevated levels are common and often harmless, but your liver loves leafy greens and hydration.',
+            'Direct Bilirubin': 'Direct bilirubin is the portion that\'s already been processed by your liver and is ready to be excreted. It helps pinpoint whether any bilirubin issue is coming from the liver itself or somewhere else in the process.',
+            'ALT': 'ALT is an enzyme found mainly in your liver. When liver cells are under stress, they release more ALT into your blood — think of it as a signal flare. Alcohol, certain medications, and fatty foods can all influence this number.',
+            'AST': 'AST is another enzyme that signals liver and muscle health. It\'s often looked at alongside ALT to get a fuller picture of what\'s happening. Mildly elevated levels can be influenced by exercise, diet, or medication.',
+            'ALP': 'ALP is an enzyme linked to your liver and bones. When it\'s outside the normal range, it can point to changes in either. It\'s typically evaluated alongside other liver markers to understand the full context.',
+            'Total Cholesterol': 'Total cholesterol is the overall measure of all cholesterol types in your blood. On its own it\'s a starting point, not the full story — your doctor will look at HDL, LDL, and triglycerides together to get a clearer picture of heart health.',
+            'HDL': 'HDL is often called "good cholesterol" because it actually carries cholesterol away from your arteries and back to your liver for removal — like a cleanup crew. Higher HDL is generally better for your heart.',
+            'LDL': 'LDL is often called "bad cholesterol" — it\'s a fatty substance that travels through your blood. When there\'s too much, it can slowly build up on artery walls like mineral deposits in a pipe. Diet and lifestyle changes can make a real difference here.',
+            'Triglycerides': 'Triglycerides are a type of fat stored in your blood for energy. When levels run high, it\'s often linked to excess sugar, refined carbs, or alcohol in the diet. Omega-3 rich foods and cutting back on sugary drinks can help significantly.',
+            'Iron': 'Iron is essential for making hemoglobin — the protein that carries oxygen in your blood. Without enough, your body\'s oxygen delivery slows down, which can leave you feeling tired and foggy. Pairing iron-rich foods with vitamin C boosts absorption.',
+            'TIBC': 'TIBC measures how well your blood can transport iron — it reflects the capacity of transferrin, the protein that carries iron around your body. It\'s usually evaluated alongside iron and ferritin to get the full picture of your iron status.',
+            'Ferritin': 'Ferritin is your body\'s iron storage tank — it holds onto iron so your body can draw on it later. When it\'s low, your reserves are running dry, which can leave you feeling tired, foggy, or short of breath even when other markers look fine.',
+            'Vitamin B12': 'B12 is essential for healthy nerve function and red blood cell production. Your body can\'t make it on its own, so it has to come from food or supplements. It\'s especially important for anyone eating a plant-based diet.',
+            'Folate': 'Folate is a B vitamin that supports cell growth and the production of healthy red blood cells. It\'s particularly important during pregnancy, but everyone needs it. Dark leafy greens, beans, and fortified foods are excellent sources.',
+            'TSH': 'TSH is a signal your brain sends to your thyroid — think of it like a thermostat dial. When TSH is high, your brain is working harder to wake up a sluggish thyroid. Your thyroid controls energy, metabolism, and mood, so this one is worth following closely.',
+            'Free T4': 'Free T4 is the active thyroid hormone that circulates in your blood. It helps regulate your metabolism, energy levels, and body temperature. It\'s typically looked at alongside TSH to get a complete picture of thyroid function.',
+            'Blood Pressure': 'Blood pressure measures the force of blood pushing against your artery walls as your heart pumps. Think of it like water pressure in a garden hose — too high for too long puts strain on the whole system. Diet, exercise, and stress management all play a meaningful role.',
+            'Systolic BP': 'Systolic pressure is the top number in a blood pressure reading — it measures the force your heart exerts each time it beats and pushes blood out. Think of it like the peak pressure in a pump. Staying below 120 is the general target for most adults.',
+            'Diastolic BP': 'Diastolic pressure is the bottom number — it measures the pressure in your arteries when your heart is resting between beats. Think of it as the baseline tension in the system. Both numbers together give your doctor the full picture of your cardiovascular health.',
+            'RDW': 'RDW stands for Red Cell Distribution Width — it measures how much variation there is in the size of your red blood cells. Think of it like checking whether all the delivery trucks are the same size. When they vary too much, it can point to nutritional deficiencies like low iron, B12, or folate.',
+            'Neutrophil %': 'Neutrophils are your body\'s first responders — the most abundant white blood cell and the first to arrive at the site of an infection. Think of them as the frontline infantry of your immune system. Elevated percentages often mean your body is actively fighting something.',
+            'Lymphocyte %': 'Lymphocytes are the strategic arm of your immune system — they include T-cells and B-cells that target specific threats and remember past infections. Think of them as your immune system\'s memory and special forces. They\'re especially important for fighting viruses.',
+            'Monocyte %': 'Monocytes are your immune system\'s cleanup crew — they engulf and destroy pathogens, dead cells, and debris. They also help coordinate the broader immune response. Elevated levels often reflect that your body is dealing with chronic inflammation or infection.',
+            'Eosinophil %': 'Eosinophils are specialized white blood cells that respond to allergies, asthma, and parasitic infections. Think of them as your body\'s allergy responders. When elevated, they often signal the immune system is reacting to something it considers a threat — like pollen, food, or environmental triggers.',
+            'Basophil %': 'Basophils are the rarest white blood cells and play a role in allergic responses and inflammation. Think of them as the alarm bells of the immune system — when triggered, they release histamine and other chemicals. They\'re rarely elevated and usually only notable in specific conditions.',
+            'Neutrophil Absolute': 'This is the actual count of neutrophils in your blood rather than the percentage. It gives a more precise picture of your infection-fighting capacity. Low counts can leave you more vulnerable to infection, while high counts typically mean your body is actively responding to a threat.',
+            'Lymphocyte Absolute': 'This is the absolute count of lymphocytes — your immune system\'s memory and targeted defense cells. The absolute count is more reliable than the percentage alone because it accounts for changes in your overall white blood cell count.',
+            'Monocyte Absolute': 'This measures the actual number of monocytes circulating in your blood. Monocytes are cleanup cells that become macrophages in tissues. The absolute count helps your doctor understand if an elevation is meaningful or just a reflection of overall immune activity.',
+            'Eosinophil Absolute': 'The absolute eosinophil count measures the actual number of these allergy-response cells in your blood. It\'s more diagnostically useful than the percentage when looking for allergic conditions, asthma, or certain infections.',
+            'Basophil Absolute': 'This is the absolute count of basophils — your rarest immune cell. Because they\'re so few in number, even small changes can look significant as a percentage. The absolute count gives a more grounded view of whether levels are truly notable.',
+            'Anion Gap': 'The anion gap measures the balance between positively and negatively charged electrolytes in your blood. Think of it as a check on your blood\'s electrical balance. When it\'s outside the normal range, it can help your doctor identify metabolic issues like acidosis — often related to kidney function, blood sugar, or dehydration.',
+            'A/G Ratio': 'The A/G ratio compares albumin to globulin — two important proteins in your blood. Albumin handles nutrient transport while globulins support immunity. The ratio helps give context to each individual protein level and can help identify whether a protein issue is related to nutrition, liver function, or immune activity.',
+            'VLDL': 'VLDL carries triglycerides through your bloodstream. It\'s sometimes called the "other bad cholesterol" — high levels are often linked to excess sugar and refined carbs in the diet. It\'s usually calculated rather than measured directly, and often improves significantly with dietary changes.',
+            'UA Leukocyte Esterase': 'This test detects an enzyme released by white blood cells in your urine. Think of it as a flag — if white blood cells are present in urine, your body may be responding to irritation or infection in the urinary tract. It\'s one of the first clues doctors look for when checking for a UTI.',
+            'UA Nitrite': 'Nitrite in urine is produced by certain bacteria — so its presence is a signal that bacteria may be in your urinary tract. Think of it as a footprint left behind. A positive result alongside leukocyte esterase strongly suggests a urinary tract infection.',
+            'UA Urobilinogen': 'Urobilinogen is a byproduct of bilirubin breakdown that normally appears in small amounts in urine. Think of it as a downstream indicator of liver and red blood cell activity. Too much or too little can both be meaningful and are usually evaluated alongside other liver markers.',
+            'UA Bilirubin': 'Bilirubin shouldn\'t normally appear in urine — when it does, it suggests the liver may not be processing it effectively. Think of it as a backup signal — when the liver\'s filtration system is under stress, bilirubin can spill over into urine. It\'s usually looked at alongside blood bilirubin levels.',
+            'UA Protein': 'A small amount of protein in urine can be normal after exercise or dehydration, but persistent elevation can signal the kidneys aren\'t filtering as efficiently as they should. Think of your kidneys as a fine-mesh strainer — protein is too large to pass through normally, so when it does, it\'s worth noting.',
+            'UA Blood': 'Blood in urine — even in microscopic amounts — is always worth investigating. There are many possible causes ranging from simple things like dehydration or exercise to things that need medical attention. Your doctor will consider it alongside your other results and symptoms.',
+            'UA Ketones': 'Ketones are produced when your body burns fat for fuel instead of carbohydrates. They\'re common in people following low-carb diets, fasting, or exercising intensely. In moderate amounts this is often harmless, but high levels — especially alongside high blood sugar — can signal a more serious issue.',
+            'UA Glucose': 'Glucose shouldn\'t normally appear in urine — your kidneys are designed to keep it in the bloodstream. When blood sugar gets high enough, the kidneys can\'t hold it all back and it spills into urine. Think of it as your kidneys\' overflow valve. This result is often looked at alongside a blood glucose test.',
+            'UA Specific Gravity': 'Specific gravity measures how concentrated your urine is — essentially how much "stuff" is dissolved in it compared to plain water. Think of it like checking how dark a cup of tea is. A very high reading means your urine is very concentrated, usually from dehydration. A very low reading means it\'s very dilute.',
+            'UA pH': 'Urine pH measures how acidic or alkaline your urine is on a scale of 4.5 to 8.5. Diet plays a big role — meat-heavy diets tend to make urine more acidic, while plant-based diets make it more alkaline. Extreme values can sometimes be associated with kidney stones or infections.',
+            'UA Clarity': 'Clarity describes how clear or cloudy your urine appears. Normal urine is clear to slightly hazy. Cloudiness can result from something as simple as dehydration or a high-protein meal, but it can also indicate white blood cells, bacteria, or crystals — which is why it\'s evaluated alongside other urinalysis results.',
+            'UA Color': 'Urine color is a quick indicator of hydration and overall health. Pale straw to yellow is normal and means you\'re well hydrated. Dark yellow or amber signals dehydration. Unusual colors like orange, pink, or brown can be caused by foods, medications, or occasionally warrant further investigation.',
+            'eGFR if African American': 'eGFR estimates how well your kidneys are filtering your blood each minute — like a flow rate reading on your kidney\'s filtration system. Some labs report a separate value adjusted for African American patients based on historical calculation differences. Higher numbers are better and it\'s one of the most important markers of long-term kidney health.',
+            'Albumin/Globulin Ratio': 'The albumin/globulin ratio compares two key proteins in your blood. Think of it as a balance check — albumin handles transport and nutrition, while globulins support your immune system. When the ratio is off, it helps your doctor understand which protein type may need attention.',
+            'Non-HDL Cholesterol': 'Non-HDL cholesterol captures all the cholesterol types that can contribute to buildup in your arteries — everything except the "good" HDL. It\'s considered a more complete picture of cardiovascular risk than LDL alone.',
+            'Estimated Average Glucose': 'Estimated average glucose gives a picture of your typical blood sugar level over the past 2-3 months — like a report card for how your body has been managing sugar. It\'s derived from your HbA1c and helps spot trends that a single glucose reading might miss.',
+            'HbA1c': 'HbA1c measures the percentage of red blood cells coated in sugar — giving a 3-month average of your blood sugar levels. Think of it as a long-term snapshot rather than a moment-in-time reading. It\'s one of the most important markers for monitoring blood sugar health.',
+            'Uric Acid': 'Uric acid is a waste product formed when your body breaks down purines, found in certain foods. When levels run high, crystals can form in joints causing discomfort. Staying well hydrated and moderating red meat and alcohol intake can help keep levels in check.'
         };
 
-        window.toggleSelectAll = function(section) {
-            const sectionBiomarkers = section === 'abnormal' 
-                ? state.biomarkers.filter(b => b.status !== 'Normal').map(b => b.name)
-                : state.biomarkers.filter(b => b.status === 'Normal').map(b => b.name);
-            
-            const allSelected = sectionBiomarkers.every(bio => state.selectedBiomarkers.includes(bio));
-            
-            if (allSelected) {
-                state.selectedBiomarkers = state.selectedBiomarkers.filter(bio => !sectionBiomarkers.includes(bio));
-            } else {
-                state.selectedBiomarkers = [...new Set([...state.selectedBiomarkers, ...sectionBiomarkers])];
+        // Fuzzy description lookup — handles OCR variants like "eGFR if African American"
+        function getBiomarkerDescription(bioName) {
+            // Exact match first
+            if (biomarkerDescriptions[bioName]) return biomarkerDescriptions[bioName];
+            // Case-insensitive exact match
+            const lowerName = bioName.toLowerCase().trim();
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (key.toLowerCase() === lowerName) return biomarkerDescriptions[key];
             }
-            
-            updateSelectedCount();
-            updateAllPillsInSection(section);
-            updateSelectAllButtonState(section);
-        };
-
-        function updatePillState(bioName, section) {
-            const container = document.getElementById(`${section}-pills`);
-            if (!container) return;
-            
-            const pill = container.querySelector(`button[data-name="${bioName}"]`);
-            if (pill) {
-                const isSelected = state.selectedBiomarkers.includes(bioName);
-                pill.classList.toggle('selected', isSelected);
-                pill.classList.toggle('unselected', !isSelected);
+            // Fuzzy: check if the biomarker name contains a known key (e.g. "eGFR if African American" contains "eGFR")
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (lowerName.includes(key.toLowerCase())) return biomarkerDescriptions[key];
             }
-        }
-
-        function updateAllPillsInSection(section) {
-            const sectionBiomarkers = section === 'abnormal' 
-                ? state.biomarkers.filter(b => b.status !== 'Normal').map(b => b.name)
-                : state.biomarkers.filter(b => b.status === 'Normal').map(b => b.name);
-            
-            sectionBiomarkers.forEach(bio => {
-                updatePillState(bio, section);
-            });
-        }
-
-        function updateSelectAllButtonState(section) {
-            const sectionBiomarkers = section === 'abnormal' 
-                ? state.biomarkers.filter(b => b.status !== 'Normal').map(b => b.name)
-                : state.biomarkers.filter(b => b.status === 'Normal').map(b => b.name);
-            
-            const allSelected = sectionBiomarkers.every(bio => state.selectedBiomarkers.includes(bio));
-            const btn = document.querySelector(`.select-all-btn[data-section="${section}"]`);
-            
-            if (btn) {
-                btn.textContent = allSelected ? 'Deselect all' : 'Select all';
+            // Fuzzy: check if a known key contains the biomarker name
+            for (const key of Object.keys(biomarkerDescriptions)) {
+                if (key.toLowerCase().includes(lowerName)) return biomarkerDescriptions[key];
             }
+            return '';
         }
 
         function getRecommendations() {
@@ -1263,7 +1750,7 @@
                 
                 state.recommendations[bio] = {
                     status: status,
-                    foods: [{ name: 'Sample food', nutrient: 'nutrient', why: 'Sample recommendation' }]
+                    foods: recommendations[bio] || [{ name: 'Consult healthcare provider', nutrient: 'professional', why: 'For personalized nutrition advice' }]
                 };
             });
             
@@ -1272,13 +1759,112 @@
         }
 
         function renderRecommendations() {
-            let html = '<p>Recommendations section (expanded in full version)</p>';
+            let html = '';
+            
+            const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status !== 'Normal';
+            });
+            
+            const normalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status === 'Normal';
+            });
+            
+            if (abnormalSelected.length > 0) {
+                html += '<div><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Out of range</h3>';
+                
+                abnormalSelected.forEach(bioName => {
+                    const recData = state.recommendations[bioName];
+                    if (recData) {
+                        const status = recData.status;
+                        const foods = recData.foods;
+                        const statusClass = status === 'High' ? 'style="background: #FCEBEB; color: #791F1F;"' : 'style="background: #E3F2FD; color: #1565c0;"';
+                        const description = getBiomarkerDescription(bioName);
+                        const foodCount = foods ? foods.length : 0;
+                        
+                        html += `
+                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
+                                    <span ${statusClass} style="font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">${status}</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Supporting your health with nutrition.'}</p>
+                                <details style="margin: 0;">
+                                    <summary style="font-size: 12px; font-weight: 500; color: #378ADD; cursor: pointer; user-select: none;">Show ${foodCount} foods that help</summary>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
+                        `;
+                        
+                        foods.forEach((food, idx) => {
+                            html += `
+                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
+                                    <strong style="color: #2C2C2C;">${food.name}</strong>
+                                    <br>${food.why}
+                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                                    </div>
+                                </details>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += '</div>';
+            }
+            
+            if (normalSelected.length > 0) {
+                html += '<div style="margin-top: 24px;"><h3 style="font-size: 16px; font-weight: 500; color: #2C2C2C; margin: 0 0 12px 0;">Normal results</h3>';
+                
+                normalSelected.forEach(bioName => {
+                    const recData = state.recommendations[bioName];
+                    if (recData) {
+                        const foods = recData.foods;
+                        const description = getBiomarkerDescription(bioName);
+                        const foodCount = foods ? foods.length : 0;
+                        
+                        html += `
+                            <div style="background: white; border: 0.5px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <h4 style="font-size: 15px; font-weight: 500; color: #2C2C2C; margin: 0;">${bioName}</h4>
+                                    <span style="background: #E8F5E9; color: #2D7D32; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px;">Normal</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Your results are within normal range.'}</p>
+                                <details style="margin: 0;">
+                                    <summary style="font-size: 12px; font-weight: 500; color: #2D7D32; cursor: pointer; user-select: none;">Show ${foodCount} foods to maintain</summary>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
+                        `;
+                        
+                        foods.forEach((food, idx) => {
+                            html += `
+                                <div style="font-size: 12px; color: #666; margin-bottom: ${idx < foods.length - 1 ? '8px' : '0'};">
+                                    <strong style="color: #2C2C2C;">${food.name}</strong>
+                                    <br>${food.why}
+                                    <br><button class="btn-small btn-secondary" onclick="openScience('${food.nutrient}')" style="margin-top: 6px;">Why this works</button>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                                    </div>
+                                </details>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += '</div>';
+            }
+            
             document.getElementById('recommendationsContainer').innerHTML = html;
         }
 
         function openScience(nutrient) {
             document.getElementById('scienceTitle').textContent = nutrient;
-            document.getElementById('scienceText').textContent = 'Scientific explanation here.';
+            document.getElementById('scienceText').textContent = scienceExplanations[nutrient] || scienceExplanations.default;
             document.getElementById('scienceModal').classList.add('open');
         }
 
@@ -1287,24 +1873,86 @@
         }
 
         function exportReport() {
-            try {
-                let reportContent = `BLOOD PANEL ANALYSIS REPORT\nDate: ${new Date().toLocaleDateString()}\n\nBiomarkers: ${state.selectedBiomarkers.join(', ')}\n\nDisclaimer: This report is educational only.`;
-                
-                const blob = new Blob([reportContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (err) {
-                console.error('Export error:', err);
-                alert('Error exporting report. Please try again.');
+            let reportContent = `BLOOD PANEL ANALYSIS REPORT
+Date: ${new Date().toLocaleDateString()}
+
+BIOMARKERS ANALYZED:
+`;
+
+            const abnormalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status !== 'Normal';
+            });
+
+            if (abnormalSelected.length > 0) {
+                reportContent += `\n⚠️ OUT OF RANGE:\n`;
+                abnormalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    reportContent += `  - ${name} (${rec.status})\n`;
+                });
             }
+
+            const normalSelected = state.selectedBiomarkers.filter(name => {
+                const bio = state.biomarkers.find(b => b.name === name);
+                return bio && bio.status === 'Normal';
+            });
+
+            if (normalSelected.length > 0) {
+                reportContent += `\n✅ NORMAL:\n`;
+                normalSelected.forEach(name => {
+                    reportContent += `  - ${name} (Normal)\n`;
+                });
+            }
+
+            reportContent += `\n\nRECOMMENDATIONS:\n`;
+            
+            if (abnormalSelected.length > 0) {
+                reportContent += `\nOUT OF RANGE FOODS:\n`;
+                abnormalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    if (rec && rec.foods) {
+                        reportContent += `\n${name} (${rec.status}):\n`;
+                        rec.foods.forEach(food => {
+                            reportContent += `  - ${food.name}: ${food.why}\n`;
+                        });
+                    }
+                });
+            }
+
+            if (normalSelected.length > 0) {
+                reportContent += `\nMAINTENANCE FOODS:\n`;
+                normalSelected.forEach(name => {
+                    const rec = state.recommendations[name];
+                    if (rec && rec.foods) {
+                        reportContent += `\n${name} (Normal):\n`;
+                        rec.foods.forEach(food => {
+                            reportContent += `  - ${food.name}: ${food.why}\n`;
+                        });
+                    }
+                });
+            }
+
+            reportContent += `\n\n---
+IMPORTANT DISCLAIMER:
+This report is educational only and not medical advice.
+Always consult your healthcare provider before making major dietary changes.
+Your data is private and automatically deleted when you close this tab.`;
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blood-panel-report-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
+        // ============================================================================
+        // EVENT LISTENERS
+        // ============================================================================
+        
         document.getElementById('uploadZone').addEventListener('click', () => {
             document.getElementById('fileInput').click();
         });
@@ -1345,6 +1993,7 @@
         document.getElementById('closeModal').addEventListener('click', closeScience);
         document.getElementById('scienceOK').addEventListener('click', closeScience);
 
+        // Feedback modal handlers
         function openFeedback() {
             document.getElementById('feedbackModal').classList.add('open');
             document.getElementById('feedbackText').focus();
@@ -1365,6 +2014,7 @@
                 return;
             }
             
+            // Prepare feedback data
             const feedback = {
                 message: feedbackText,
                 timestamp: new Date().toISOString(),
@@ -1372,6 +2022,7 @@
                 url: window.location.href
             };
             
+            // Try to send to Vercel API (optional - can work without backend)
             try {
                 statusEl.innerHTML = '<span style="color: #666;">Sending...</span>';
                 
@@ -1385,11 +2036,13 @@
                     statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                     setTimeout(() => closeFeedback(), 2000);
                 } else {
+                    // Fallback: store locally if API fails
                     storeFeedbackLocally(feedback);
                     statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                     setTimeout(() => closeFeedback(), 2000);
                 }
             } catch (err) {
+                // Graceful fallback
                 storeFeedbackLocally(feedback);
                 statusEl.innerHTML = '<span style="color: #2D7D32; font-weight: 500;">✓ Thank you for your feedback!</span>';
                 setTimeout(() => closeFeedback(), 2000);
@@ -1397,6 +2050,7 @@
         }
 
         function storeFeedbackLocally(feedback) {
+            // Store in localStorage as fallback
             try {
                 let feedbackList = JSON.parse(localStorage.getItem('bloodPanelFeedback') || '[]');
                 feedbackList.push(feedback);
@@ -1415,6 +2069,7 @@
         document.getElementById('cancelFeedback').addEventListener('click', closeFeedback);
         document.getElementById('submitFeedback').addEventListener('click', submitFeedback);
         
+        // Allow Enter key to submit
         document.getElementById('feedbackText').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) {
                 submitFeedback();
@@ -1425,3 +2080,4 @@
     </script>
 </body>
 </html>
+
