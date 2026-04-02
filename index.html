@@ -670,6 +670,82 @@
             .main-content::before { left: 0; }
             .main-inner { padding: 20px 16px 36px; }
         }
+
+        /* ============================================================
+           HERO HEADER
+        ============================================================ */
+
+        .site-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a3a2a 0%, #2d5a3d 55%, #3d7a50 100%);
+            padding: 50px 30px 44px;
+            box-shadow: 0 8px 32px rgba(29, 80, 50, 0.25);
+        }
+
+        .site-header::before {
+            content: '';
+            position: absolute;
+            top: -30px; left: -30px;
+            width: 220px; height: 220px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.12'%3E%3Cellipse cx='100' cy='100' rx='40' ry='75' transform='rotate(-25 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='40' ry='75' transform='rotate(25 100 100)'/%3E%3Cline x1='100' y1='25' x2='100' y2='175'/%3E%3Cellipse cx='60' cy='60' rx='22' ry='42' transform='rotate(-35 60 60)'/%3E%3Cellipse cx='140' cy='140' rx='22' ry='42' transform='rotate(145 140 140)'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            pointer-events: none;
+        }
+
+        .site-header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; right: -40px;
+            width: 260px; height: 260px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.10'%3E%3Cellipse cx='100' cy='100' rx='35' ry='65' transform='rotate(15 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='35' ry='65' transform='rotate(-15 100 100)'/%3E%3Cline x1='100' y1='35' x2='100' y2='165'/%3E%3Cellipse cx='55' cy='55' rx='18' ry='35' transform='rotate(-45 55 55)'/%3E%3Cellipse cx='145' cy='145' rx='18' ry='35' transform='rotate(135 145 145)'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: contain;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.22);
+            color: #a8dbb8;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
+        .site-header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 38px;
+            font-weight: 600;
+            color: #f0faf4;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+
+        .site-header p {
+            font-size: 15px;
+            color: #9ecfb0;
+            font-weight: 300;
+            letter-spacing: 0.4px;
+        }
+
+        @media (max-width: 600px) {
+            .site-header { padding: 32px 20px 28px; border-radius: 14px; }
+            .site-header h1 { font-size: 26px; }
+        }
     </style>
 </head>
 <body>
@@ -681,7 +757,7 @@
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="sidebar-badge">Blood Panel</div>
-                <div class="sidebar-title">Your Blood Work,<br>Decoded</div>
+                <div class="sidebar-title">Your Analysis</div>
                 <div class="sidebar-subtitle">Private · Free · In-browser</div>
             </div>
 
@@ -744,6 +820,15 @@
         ══════════════════════════════════════════════════════════ -->
         <main class="main-content">
             <div class="main-inner">
+
+                <!-- HERO HEADER -->
+                <header class="site-header">
+                    <div class="hero-inner">
+                        <div class="hero-badge">Blood Panel Analysis</div>
+                        <h1>Your Blood Work, Decoded</h1>
+                        <p>Understanding your labs. Supporting your health. No chatbot sees this. Ever.</p>
+                    </div>
+                </header>
 
                 <!-- STEP 1: UPLOAD -->
                 <div id="step-upload">
@@ -2007,7 +2092,7 @@
                             </div>
                             <p style="font-size: 13px; color: #666; margin: 0 0 12px 0; line-height: 1.6;">${description || 'Your results are within normal range.'}</p>
                             <details style="margin: 0;">
-                                <summary style="font-size: 12px; font-weight: 500; color: #2D7D32; cursor: pointer; user-select: none;">Show ${foods.length} foods to maintain</summary>
+                                <summary style="font-size: 12px; font-weight: 500; color: #2D7D32; cursor: pointer; user-select: none;">Healthy recommendations</summary>
                                 <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #eee;">
                     `;
 
@@ -2111,6 +2196,15 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
+
+                // Mark Step 4 complete in sidebar
+                const step4 = document.getElementById('sidebar-step-4');
+                if (step4) {
+                    step4.classList.add('done');
+                    step4.classList.remove('active');
+                    const dot = step4.querySelector('.step-dot');
+                    if (dot) dot.textContent = '✓';
+                }
             } catch (err) {
                 console.error('Export error:', err);
                 document.getElementById('exportWarning').innerHTML = '<p class="export-warning">⚠️ Something went wrong while exporting. Please try again.</p>';
